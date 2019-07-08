@@ -8,7 +8,7 @@ class WikipediaSkill(SuperSkill):
     name = "Wikipedia Skill"
     version = "1.0"
     creator = ""
-    tokens = ["who", "what", "why", "where", "definition"]
+    tokens = ["wikipedia"]
 
     def main(self, message):
         search = re.sub('(who|where|what|why)( is| are)?( a | )?', '', message.msg)
@@ -21,6 +21,8 @@ class WikipediaSkill(SuperSkill):
                 result = result.split(".")[0]
                 result = re.sub('\(.*\) ', '', result)
                 message.send(result)
+            else:
+                message.run_next_skill()
 
     def get_wiki_page(self, inputs: list, recursion_depth: int = 2):
         if recursion_depth > 0:

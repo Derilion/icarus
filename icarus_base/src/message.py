@@ -26,10 +26,8 @@ class MessageInfo:
 
     def set_skill(self, skill: list):
         self.skill = skill
-        print(self.skill)
 
     def run_next_skill(self):
-        print(self.skill)
         skill = self.skill.pop(0)
         print("Running Skill {}".format(skill.name))
         skill.append_message(self)

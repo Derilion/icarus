@@ -19,9 +19,15 @@ class SuperSkill:
 
     # Queues
     _message_lock: Lock = Lock()
-    _messages: list = []
+    _messages: list = None
     _thread_lock: Lock = Lock()
-    _threads: list = []
+    _threads: list = None
+
+    def __init__(self):
+        with self._message_lock:
+            self._messages = []
+        with self._thread_lock:
+            self._threads = []
 
     def main(self, message):
         raise ValueError("Skill functionality is not defined")
@@ -59,9 +65,11 @@ class SuperSkill:
                 self.skill._threads.remove(self)
 
     def append_message(self, message):
+
         self._messages.append(message)
-        # print("Current Queue: {}".format(self._messages))
+
         if len(self._threads) < self.max_threads:
+
             active_skill = self._SkillThread(self)
             with self._thread_lock:
                 self._threads.append(active_skill)

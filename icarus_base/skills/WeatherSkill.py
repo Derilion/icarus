@@ -27,14 +27,13 @@ class WeatherSkill(SuperSkill):
     name = "Weather Skill"
     version = "1.0"
     creator = "derilion"
-    tokens = ["how", "what", "weather"]
+    tokens = ["weather"]
 
     backend = OpenWeatherMapsEngine()
 
     answers_regular = "The weather is {} with {} degrees Celsius"
 
     def main(self, message):
-        print("am i here?")
         location = "wuerzburg"
         results = self.backend.get_weather(location)
         message.send(self.answers_regular.format(results[0], results[1]))

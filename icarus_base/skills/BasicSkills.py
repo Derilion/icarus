@@ -46,7 +46,7 @@ class TimeSkill(SuperSkill):
     name = "Time Skill"
     version = "1.0"
     creator = "derilion"
-    tokens = ["what", "is", "date", "time", "stardate"]
+    tokens = ["date", "time", "stardate"]
 
     _date_response = ["It is {}, the {} of {} {}"]
     _time_Response = ["It is {}:{} {}"]
@@ -75,8 +75,9 @@ class Keanufy(SuperSkill):
     tokens = ["you", "are", "breathtaking"]
 
     def main(self, message):
-        print("Starting Keanufying")
         if (self.tokens[0] in message.get_tokens()) and (self.tokens[1] in message.get_tokens()) and \
                 (self.tokens[2] in message.get_tokens()):
             message.send("No, you're breathtaking!")
+        else:
+            message.run_next_skill()
 

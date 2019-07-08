@@ -48,7 +48,6 @@ class SkillStrategy:
 
         result = self._sort_skills(result_dict)
         result.append(self.fallback_skill)
-        print(result)
         message.set_skill(result)
 
         return
