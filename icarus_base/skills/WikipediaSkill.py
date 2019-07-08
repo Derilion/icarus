@@ -8,10 +8,15 @@ class WikipediaSkill(SuperSkill):
     name = "Wikipedia Skill"
     version = "1.0"
     creator = ""
-    tokens = ["wikipedia"]
+    tokens = ["wikipedia", "define"]
+
+    _keyword = "define"
 
     def main(self, message):
-        search = re.sub('(who|where|what|why)( is| are)?( a | )?', '', message.msg)
+        if self._keyword in message.msg:
+            search = message.msg[len(self._keyword)+1:]
+        else:
+            search = re.sub('(who|where|what|why)( is| are)?( a | )?', '', message.msg)
         search_results = wikipedia.search(search)
 
         if search_results:
