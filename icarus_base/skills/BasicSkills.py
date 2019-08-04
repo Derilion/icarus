@@ -61,7 +61,10 @@ class TimeSkill(SuperSkill):
         year = current.year
         days_this_year = datetime(year+1, 1, 1) - datetime(year, 1, 1)
         days_gone = current - datetime(year, 1, 1)
-        stardate = 1000 * (current.year + 1 / days_this_year.days * (days_gone.days -1 + current.hour / 24 + current.minute / 1440) - self._cochrane_const)
+        stardate = round(1000 * (current.year + 1 / days_this_year.days * (days_gone.days -1 + current.hour / 24 + current.minute / 1440) - self._cochrane_const), 2)
+        if stardate < 0:
+            stardate = stardate * -1
+            stardate = str(stardate) + " before Warp flight"
 
         message.send(self._stardate_response[0].format(stardate))
 
