@@ -68,9 +68,6 @@ class TimeSkill(SuperSkill):
 
         message.send(self._stardate_response[0].format(stardate))
 
-
-
-
 class Keanufy(SuperSkill):
     name = "Keanufy Skill"
     version = "1.0"
@@ -81,6 +78,21 @@ class Keanufy(SuperSkill):
         if (self.tokens[0] in message.get_tokens()) and (self.tokens[1] in message.get_tokens()) and \
                 (self.tokens[2] in message.get_tokens()):
             message.send("No, you're breathtaking!")
+        else:
+            message.run_next_skill()
+
+class IdentitySkill(SuperSkill):
+
+    name = "WhoAmI"
+    version = "1.0"
+    creator = "Derilion"
+    tokens = ["you"]
+
+    responses = ["I am Icarus, an interactive assistant", "I am me", "A scary demon from the future who has eaten up all humanity"]
+
+    def main(self, message):
+        if True:
+            message.send(self.responses)
         else:
             message.run_next_skill()
 

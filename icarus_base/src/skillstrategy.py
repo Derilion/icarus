@@ -1,5 +1,7 @@
 from skills.SuperSkill import SuperSkill
 from skills.BasicSkills import IDKSkill
+from skills.WikipediaSkill import WikipediaSkill
+from skills.WolframSkill import WolframSkill
 import os
 import sys
 import inspect
@@ -11,7 +13,7 @@ PLUGIN_PATH: str = './skills'
 class SkillStrategy:
 
     skills = dict()
-    fallback_skill = IDKSkill()
+    fallback_skill = [WolframSkill(), WikipediaSkill(), IDKSkill()]
 
     def __init__(self):
         self._load_skills()
@@ -47,7 +49,7 @@ class SkillStrategy:
                         result_dict[skill] += 1
 
         result = self._sort_skills(result_dict)
-        result.append(self.fallback_skill)
+        result += self.fallback_skill
         message.set_skill(result)
 
         return

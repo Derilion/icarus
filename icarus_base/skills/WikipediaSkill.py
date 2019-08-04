@@ -15,8 +15,11 @@ class WikipediaSkill(SuperSkill):
     def main(self, message):
         if self._keyword in message.msg:
             search = message.msg[len(self._keyword)+1:]
-        else:
+        elif any(word in message.msg for word in ["who", "where", "what", "why"]):
             search = re.sub('(who|where|what|why)( is| are)?( a | )?', '', message.msg)
+        else:
+            message.run_next_skill()
+            return
         search_results = wikipedia.search(search)
 
         if search_results:
