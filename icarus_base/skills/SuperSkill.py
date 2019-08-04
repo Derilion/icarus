@@ -1,4 +1,5 @@
 from threading import Thread, Lock
+from src.persistence import Persistence
 import time
 import random
 
@@ -24,10 +25,13 @@ class SuperSkill:
     _threads: list = None
 
     def __init__(self):
+        self.persistence = Persistence()
         with self._message_lock:
             self._messages = []
         with self._thread_lock:
             self._threads = []
+
+        self.setup()
 
     def main(self, message):
         raise ValueError("Skill functionality is not defined")
@@ -77,6 +81,15 @@ class SuperSkill:
 
     def get_tokenlength(self):
         return len(self.tokens)
+
+    def register_config(self, name: str, default_val: str = ""):
+        self.persistence.register_configuration(self.name, name, default_val)
+
+    def get_config(self)->dict:
+        return self.persistence.get_config(self.name)
+
+    def setup(self):
+        pass
 
 
 class EchoSkill(SuperSkill):

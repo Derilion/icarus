@@ -15,6 +15,8 @@ from src.Clients.cliclient import CLIClient
 from src.datasources import DataSource
 from src.skillstrategy import SkillStrategy
 
+from src.persistence import Persistence
+
 
 class Icarus:
 
@@ -53,6 +55,16 @@ class Icarus:
         self._start_clients()
 
 
+def test_pers():
+    a = Persistence()
+    a.register_configuration("test", "subtest", "noval")
+    a.register_configuration("test", "subtester", "12")
+    a.register_configuration("abc", "def", "ghi")
+    a.load_config()
+    a.show_config()
+
+
 # thread safe init
 if __name__ == "__main__":
+    # test_pers()
     Icarus().start()
