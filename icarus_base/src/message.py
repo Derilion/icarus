@@ -1,5 +1,7 @@
 """Message info"""
 from random import randint
+from datetime import datetime, timedelta, timezone
+
 
 class MessageInfo:
     """
@@ -16,12 +18,16 @@ class MessageInfo:
     client = None
     client_attr: dict = None
     tokens: list = None
+    date_tokens: list = None    # list of datetime objects if something is found
+    intent_tokens: list = None  # intents if they are found
 
     def __init__(self, msg, client, client_attr: dict = None):
         self.msg = str(msg)
         self.client = client
         self.client_attr = client_attr
         self.tokens = list()
+        self.date_tokens = list()
+        self.intent_tokens = list()
         self._parse()
 
     def set_skill(self, skill: list):
@@ -55,6 +61,18 @@ class MessageInfo:
         for token in local_tokens:
             if token not in self.tokens:
                 self.tokens.append(token)
+
+        if "today" in local_tokens:
+            self.date_tokens.append((datetime.now(timezone.utc)).replace(hour=0, minute=0, second=0, microsecond=0))
+        if "tomorrow" in local_tokens:
+            self.date_tokens.append(datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+                                    + timedelta(days=1))
+        if "yesterday" in local_tokens:
+            self.date_tokens.append(datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+                                    - timedelta(days=1))
+
+        if len(self.date_tokens) > 0:
+            print(self.date_tokens)
 
     def __str__(self):
         return self.msg

@@ -1,3 +1,6 @@
 python-telegram-bot
 gtts
 wikipedia
+caldav
+icalendar
+pyaudio

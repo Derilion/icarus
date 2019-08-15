@@ -17,6 +17,9 @@ from src.skillstrategy import SkillStrategy
 
 from src.persistence import Persistence
 
+from porcupine.binding.python.porcupine import Porcupine
+import pyaudio
+import struct
 
 class Icarus:
 
@@ -64,7 +67,38 @@ def test_pers():
     a.show_config()
 
 
+#library_path = "./porcupine/lib/linux/x86_64/libpv_porcupine.so"
+#model_path = "./porcupine/lib/common/porcupine_params.pv"
+#keyword_path = "./Jarvis_linux.ppn"
+#sensitivity = 0.5
+#handle = Porcupine(library_path, model_path, keyword_file_paths=[keyword_path], sensitivities=[sensitivity])
+#pa = pyaudio.PyAudio()
+#audio_stream = pa.open(
+#        rate=handle.sample_rate,
+#        channels=1,
+#        format=pyaudio.paInt16,
+#        input=True,
+#        frames_per_buffer=handle.frame_length
+#)
+
+
+def test_porcupine():
+    while True:
+        pcm = get_next_audio_frame()
+        keyword_index = handle.process(pcm)
+        if keyword_index is not False:
+            # detection event logic/callback
+            print("recognized")
+
+
+def get_next_audio_frame():
+    pcm = audio_stream.read(handle.frame_length)
+    pcm = struct.unpack_from("h" * handle.frame_length, pcm)
+    return pcm
+
+
 # thread safe init
 if __name__ == "__main__":
     # test_pers()
+    # test_porcupine()
     Icarus().start()
