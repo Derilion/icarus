@@ -75,6 +75,24 @@ class SkillStrategy:
                 results.append(skill)
         return results
 
+    def install_skill(self, file_handle)->int:
+        # copy files
+        # install requirements
+        # add to database
+        pass
+
+    def deactivate_skill(self, skill_id):
+        # database set deactivated
+        pass
+
+    def activate_skill(self, skill_id):
+        # database set activated
+        pass
+
+    def delete_skill(self, skill_id):
+        # database set removed
+        # remove files
+        pass
 
     # get all skills with their tokens in a list
     # get each new query

@@ -85,7 +85,7 @@ class SuperSkill:
     def register_config(self, name: str, default_val: str = ""):
         self.persistence.register_configuration(self.name, name, default_val)
 
-    def get_config(self)->dict:
+    def get_config(self) -> dict:
         return self.persistence.get_config(self.name)
 
     def setup(self):
@@ -100,11 +100,10 @@ class EchoSkill(SuperSkill):
     name = "Echo"
     version = "1.0"
     creator = "Derilion"
-    tokens = ['echo', 'repeat']
+    tokens = ['say', 'repeat', 'echo']
 
     max_threads = 2
 
     def main(self, message):
-        time.sleep(5)
+        time.sleep(1)
         message.send(message.msg)
-        # print(self.message.msg)

@@ -55,18 +55,31 @@ class TimeSkill(SuperSkill):
     _cochrane_const = 2063
 
     def main(self, message):
-        #parsing
+        # parsing
 
         current = datetime.now()
-        year = current.year
-        days_this_year = datetime(year+1, 1, 1) - datetime(year, 1, 1)
-        days_gone = current - datetime(year, 1, 1)
-        stardate = round(1000 * (current.year + 1 / days_this_year.days * (days_gone.days -1 + current.hour / 24 + current.minute / 1440) - self._cochrane_const), 2)
+        stardate = self._get_stardate(current)
+
         if stardate < 0:
             stardate = stardate * -1
             stardate = str(stardate) + " before Warp flight"
 
         message.send(self._stardate_response[0].format(stardate))
+
+    def _get_stardate(self, target: datetime) -> float:
+        """
+        calculates the stardate for a datetime object
+        :return: floating comma stardate with 2 decimal figures
+        """
+        year = target.year
+        days_this_year = datetime(year + 1, 1, 1) - datetime(year, 1, 1)
+        days_gone = target - datetime(year, 1, 1)
+        stardate = round(1000 * (target.year + 1 / days_this_year.days *
+                                 (days_gone.days - 1 + target.hour / 24 + target.minute / 1440)
+                                 - self._cochrane_const), 2)
+
+        return stardate
+
 
 class Keanufy(SuperSkill):
     name = "Keanufy Skill"

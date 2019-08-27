@@ -21,6 +21,8 @@ from porcupine.binding.python.porcupine import Porcupine
 import pyaudio
 import struct
 
+import pyttsx3
+
 class Icarus:
 
     client_threads = None
@@ -97,8 +99,16 @@ def get_next_audio_frame():
     return pcm
 
 
+def tts(text: str):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.setProperty('rate', 120)
+    engine.setProperty('volume', 1)
+    engine.runAndWait()
+
 # thread safe init
 if __name__ == "__main__":
     # test_pers()
     # test_porcupine()
+    # tts("test")
     Icarus().start()
