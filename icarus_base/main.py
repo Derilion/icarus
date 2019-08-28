@@ -12,7 +12,6 @@ version: 0.1a
 from src.Clients.telegramclient import TelegramClient
 from src.Clients.randomclient import RandomClient
 from src.Clients.cliclient import CLIClient
-from src.datasources import DataSource
 from src.skillstrategy import SkillStrategy
 
 from src.persistence import Persistence
@@ -23,6 +22,7 @@ import struct
 
 import pyttsx3
 
+
 class Icarus:
 
     client_threads = None
@@ -30,11 +30,11 @@ class Icarus:
     skill_strategy = None
 
     def __init__(self):
-        self.load_data_source(DataSource())
+        self.load_data_source(Persistence())
         self.set_skill_strategy(SkillStrategy())
         self._init_clients()
 
-    def load_data_source(self, data_source: DataSource):
+    def load_data_source(self, data_source: Persistence):
         self.data_source = data_source
 
     def set_skill_strategy(self, skill_strategy: SkillStrategy):
@@ -58,15 +58,6 @@ class Icarus:
 
     def start(self):
         self._start_clients()
-
-
-def test_pers():
-    a = Persistence()
-    a.register_configuration("test", "subtest", "noval")
-    a.register_configuration("test", "subtester", "12")
-    a.register_configuration("abc", "def", "ghi")
-    a.load_config()
-    a.show_config()
 
 
 #library_path = "./porcupine/lib/linux/x86_64/libpv_porcupine.so"

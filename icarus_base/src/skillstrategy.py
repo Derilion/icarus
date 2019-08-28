@@ -23,7 +23,11 @@ class SkillStrategy:
         self._start_skills()
 
     def _start_skills(self):
-        for skill in self._skill_list:
+        for index, skill in enumerate(self._skill_list):
+            # print(str(index) + skill.name)
+            # start skill
+            # self._skill_list = skill()
+            # hand over index for single source purposes
             self._register_plugin(skill())
 
     def _load_skills(self):
@@ -59,6 +63,11 @@ class SkillStrategy:
 
         result = self._sort_skills(result_dict)
         result += self.fallback_skill
+
+        # get skills instead of indizes
+        # for index, skill in enumerate(result):
+        #    result[index] = self._skill_list[skill]
+
         message.set_skill(result)
 
         return
