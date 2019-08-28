@@ -75,7 +75,7 @@ class SkillStrategy:
                 results.append(skill)
         return results
 
-    def install_skill(self, file_handle)->int:
+    def install_skill(self, file_handle) -> int:
         # copy files
         # install requirements
         # add to database
