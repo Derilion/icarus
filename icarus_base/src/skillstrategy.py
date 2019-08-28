@@ -12,11 +12,19 @@ PLUGIN_PATH: str = './skills'
 
 class SkillStrategy:
 
+    _skill_list = list()
     skills = dict()
     fallback_skill = [WolframSkill(), WikipediaSkill(), IDKSkill()]
 
     def __init__(self):
+        # load skills
         self._load_skills()
+        # start skills
+        self._start_skills()
+
+    def _start_skills(self):
+        for skill in self._skill_list:
+            self._register_plugin(skill())
 
     def _load_skills(self):
         """Loads all modules of the plugins package"""
@@ -28,7 +36,8 @@ class SkillStrategy:
                 if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
 
                     print("Discovered Plugin \"{}\"".format(obj.name))
-                    self._register_plugin(obj())
+                    self._skill_list.append(obj)
+                    # self._register_plugin(obj)
 
     def _register_plugin(self, plugin: SuperSkill):
 

@@ -106,6 +106,7 @@ def tts(text: str):
     engine.setProperty('volume', 1)
     engine.runAndWait()
 
+
 # thread safe init
 if __name__ == "__main__":
     # test_pers()

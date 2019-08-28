@@ -37,7 +37,8 @@ class WeatherSkill(SuperSkill):
 
     answers_regular = "The weather is {} with {} degrees Celsius"
     answers_location = "The weather in {} is {} with {} degrees Celsius"
-    answer_no_connection = "Sorry, the server doesn't want to respond"
+    answer_no_connection = ["Sorry, the server doesn't want to respond",
+                            "It seems the server does not want to talk to me"]
 
     def setup(self):
         self.register_config("token")

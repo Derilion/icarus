@@ -1,7 +1,9 @@
 from threading import Thread, Lock
 from src.persistence import Persistence
+from src.persistence import SimpleDB
 import time
 import random
+import re
 
 
 class SuperSkill:
@@ -25,7 +27,8 @@ class SuperSkill:
     _threads: list = None
 
     def __init__(self):
-        self.persistence = Persistence()
+        self._persistence = Persistence()
+        self._db = SimpleDB()
         with self._message_lock:
             self._messages = []
         with self._thread_lock:
@@ -83,10 +86,25 @@ class SuperSkill:
         return len(self.tokens)
 
     def register_config(self, name: str, default_val: str = ""):
-        self.persistence.register_configuration(self.name, name, default_val)
+        self._persistence.register_configuration(self.name, name, default_val)
 
     def get_config(self) -> dict:
-        return self.persistence.get_config(self.name)
+        return self._persistence.get_config(self.name)
+
+    def save_dict(self, data: dict, name: str = None):
+        if name is not None:
+            name = self.name + name
+        else:
+            name = self.name
+        self._persistence.save_persistent_dict(name, data)
+
+    def load_dict(self, name: str = None) -> dict:
+        if name is not None:
+            name = self.name + name
+        else:
+            name = self.name
+        return self._persistence.load_persistent_dict(name)
+
 
     def setup(self):
         pass
@@ -106,4 +124,18 @@ class EchoSkill(SuperSkill):
 
     def main(self, message):
         time.sleep(1)
-        message.send(message.msg)
+        data = self.load_dict()
+        if data is None:
+            data = {"ctr": 0}
+        data["ctr"] += 1
+        self.save_dict(data)
+        print("used for {} times".format(data["ctr"]))
+        result = message.msg.lower()
+        if "repeat" in result:
+            result = result.split("repeat", 1)[1]
+        elif "say" in result:
+            result = result.split("say", 1)[1]
+        elif "echo" in result:
+            result = result.split("echo", 1)[1]
+
+        message.send(result)
