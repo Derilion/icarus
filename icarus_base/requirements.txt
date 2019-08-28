@@ -4,3 +4,6 @@ wikipedia
 caldav
 icalendar
 pyaudio
+flask
+flask-jsonpify
+flask-restful

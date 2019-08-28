@@ -13,7 +13,7 @@ from src.Clients.telegramclient import TelegramClient
 from src.Clients.randomclient import RandomClient
 from src.Clients.cliclient import CLIClient
 from src.skillstrategy import SkillStrategy
-
+from src.restapi import app
 from src.persistence import Persistence
 
 from porcupine.binding.python.porcupine import Porcupine
@@ -104,3 +104,4 @@ if __name__ == "__main__":
     # test_porcupine()
     # tts("test")
     Icarus().start()
+    # app.run(port="10080")  # iwie unschön
