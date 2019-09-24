@@ -12,8 +12,9 @@ version: 0.1a
 from src.Clients.telegramclient import TelegramClient
 from src.Clients.randomclient import RandomClient
 from src.Clients.cliclient import CLIClient
+from src.Clients.speechclient import SpeechClient
 from src.skillstrategy import SkillStrategy
-from src.restapi import app
+from src.restapi import RestApi, PERSISTENCE
 from src.persistence import Persistence
 
 from porcupine.binding.python.porcupine import Porcupine
@@ -23,16 +24,20 @@ import struct
 import pyttsx3
 
 
+
 class Icarus:
 
     client_threads = None
     data_source = None
     skill_strategy = None
+    rest_api = None
 
     def __init__(self):
-        self.load_data_source(Persistence())
-        self.set_skill_strategy(SkillStrategy())
+        # self.load_data_source(Persistence())
+        self.data_source = PERSISTENCE
+        self.set_skill_strategy(SkillStrategy(self.data_source))
         self._init_clients()
+        # self.rest_api = RestApi('test', self.data_source).start()
 
     def load_data_source(self, data_source: Persistence):
         self.data_source = data_source
@@ -45,7 +50,7 @@ class Icarus:
         # self.client_threads.append(CLIClient(self.skill_strategy))
         # self.client_threads.append(RandomClient(self.skill_strategy))
         self.client_threads.append(TelegramClient(self.skill_strategy))
-        # self.client_threads.append(SpeechClient(self.skill_strategy))
+        self.client_threads.append(SpeechClient(self.skill_strategy))
 
     def _start_clients(self):
         for client in self.client_threads:
