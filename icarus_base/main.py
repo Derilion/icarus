@@ -50,7 +50,7 @@ class Icarus:
         # self.client_threads.append(CLIClient(self.skill_strategy))
         # self.client_threads.append(RandomClient(self.skill_strategy))
         self.client_threads.append(TelegramClient(self.skill_strategy))
-        self.client_threads.append(SpeechClient(self.skill_strategy))
+        # self.client_threads.append(SpeechClient(self.skill_strategy))
 
     def _start_clients(self):
         for client in self.client_threads:
