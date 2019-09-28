@@ -21,7 +21,7 @@ class SpeechClient(SuperClient):
     pa = None
     audio_stream = None
 
-    def setup(self, name: str = 'Icarus', sensitivity: float = 0.7):
+    def setup(self, name: str = 'Icarus', sensitivity: float = 0.5):
         self.sensitivity = [sensitivity]
         try:
             self.setup_porcupine(name)

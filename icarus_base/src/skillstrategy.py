@@ -14,13 +14,19 @@ class SkillStrategy:
 
     _skill_list = list()
     skills = dict()
-    fallback_skill = [WolframSkill(), WikipediaSkill(), IDKSkill()]
+    fallback_skill = None
+    persistence = None
 
-    def __init__(self):
+    def __init__(self, persistence):
+        self.persistence = persistence
+
         # load skills
         self._load_skills()
         # start skills
         self._start_skills()
+
+        # load fallback skills
+        self.fallback_skill = [WolframSkill(persistence), WikipediaSkill(persistence), IDKSkill(persistence)]
 
     def _start_skills(self):
         for index, skill in enumerate(self._skill_list):
@@ -28,11 +34,11 @@ class SkillStrategy:
             # start skill
             # self._skill_list = skill()
             # hand over index for single source purposes
-            self._register_plugin(skill())
+            self._register_plugin(skill(self.persistence))
 
     def _load_skills(self):
         """Loads all modules of the plugins package"""
-
+        skills_dict = dict()
         for file in os.listdir(PLUGIN_PATH):
             temp = file.rsplit('.py', 1)
             import_module('skills.' + temp[0])
@@ -40,8 +46,10 @@ class SkillStrategy:
                 if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
 
                     print("Discovered Plugin \"{}\"".format(obj.name))
+                    skills_dict[obj.name] = {"active": True, "creator": obj.creator, "version": obj.version}
                     self._skill_list.append(obj)
                     # self._register_plugin(obj)
+        self.persistence.save_persistent_dict("SKILLS", skills_dict)
 
     def _register_plugin(self, plugin: SuperSkill):
 

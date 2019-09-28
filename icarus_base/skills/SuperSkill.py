@@ -26,9 +26,8 @@ class SuperSkill:
     _thread_lock: Lock = Lock()
     _threads: list = None
 
-    def __init__(self):
-        self._persistence = Persistence()
-        self._db = SimpleDB()
+    def __init__(self, persistence):
+        self._persistence = persistence
         with self._message_lock:
             self._messages = []
         with self._thread_lock:

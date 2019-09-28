@@ -25,7 +25,7 @@ class ConfigIni:
         self._config_path = config_path
 
     def load_config(self, config_dict: dict):
-        """reads all options from the config file"""
+        """transfer all config dict settings"""
 
         # init parser
         ini_parser = configparser.ConfigParser()
@@ -113,7 +113,6 @@ class SimpleDB:
 
 class Persistence:
 
-    # todo: implement singleton
     """
     register all variables with [name, type]
     register function
@@ -131,7 +130,20 @@ class Persistence:
 
     _config_db_key = "CONFIG"
     _config_dict: dict = None
+    _config_lock = Lock()
     _persistence_dict: dict = None
+    _persistence_lock = Lock()
+
+    _instance = None
+    _instance_lock = Lock()
+
+    def __new__(cls, *args, **kwargs):
+        """Thread safe singleton implementation"""
+        if Persistence._instance is None:
+            with Persistence._instance_lock:
+                if Persistence._instance is None:
+                    Persistence._instance = super(Persistence, cls).__new__(cls, *args, **kwargs)
+        return Persistence._instance
 
     def __init__(self, config_handler=ConfigIni(), db_handler=SimpleDB()):
         self.config = config_handler
@@ -141,8 +153,12 @@ class Persistence:
 
     def load_config(self):
         """Refresh the current config dict"""
-        self.config.load_config(self._config_dict)
+        with self._config_lock:
+            self.config.load_config(self._config_dict)
         temp = self.load_persistent_dict(self._config_db_key)
+        temp = {**self._config_dict, **temp}
+        # merge 2 dicts while temp overwrites settings in the DB
+        self.save_persistent_dict(self._config_db_key, temp)
         # todo: merge dicts
 
     def get_config(self, section: str) -> dict:
@@ -167,11 +183,13 @@ class Persistence:
 
     def register_configuration(self, parent: str, name: str, default: str = ""):
         """register new configuration variables"""
-        # check stuff first
-        if self._config_dict.get(parent) is None:
-            self._config_dict[parent] = dict()
-        self._config_dict[parent][name] = default
-        self.save_persistent_dict(self._config_db_key, self._config_dict)
+        # check stuff
+        with self._config_lock:
+            if self._config_dict.get(parent) is None:
+                self._config_dict[parent] = dict()
+            self._config_dict[parent][name] = default
+
+        # self.save_persistent_dict(self._config_db_key, self._config_dict)
 
     def show_config(self):
         """readable printout of the loaded configuration"""

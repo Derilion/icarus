@@ -13,13 +13,11 @@ class SuperClient(Thread):
     id = None
     stop_request = False
     skill_strategy = None
-    skill_threads = None
 
     def __init__(self, skill_strategy: SkillStrategy):
         Thread.__init__(self)
         self.id = random.randint(0, 999)
         self.skill_strategy = skill_strategy
-        self.skill_threads = []
 
     def _queue_new_message(self, message: str, client_opt: dict = None):
         # print("Added new Message: {} to queue of length {}".format(message, len(self.inbound_fifo)))
