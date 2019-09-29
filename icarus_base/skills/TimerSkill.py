@@ -8,6 +8,7 @@ class IDKSkill(SuperSkill):
     creator = "Derilion"
     tokens = ['timer']
 
+    max_threads = 15
     _response = "I have set a timer for {} seconds"
     _units = [["second", 1], ["minute", 60], ["hour", 3600], ["day", 24 * 3600]]
 
