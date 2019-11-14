@@ -4,6 +4,7 @@ from skills.WikipediaSkill import WikipediaSkill
 from skills.WolframSkill import WolframSkill
 import os
 import sys
+import re
 import inspect
 from importlib import import_module
 
@@ -16,6 +17,7 @@ class SkillStrategy:
     skills = dict()
     fallback_skill = None
     persistence = None
+    skill_handler = None
 
     def __init__(self, persistence):
         self.persistence = persistence
@@ -27,6 +29,8 @@ class SkillStrategy:
 
         # load fallback skills
         self.fallback_skill = [WolframSkill(persistence), WikipediaSkill(persistence), IDKSkill(persistence)]
+
+        self.skill_handler = InvertedSkillIndex()
 
     def _start_skills(self):
         for index, skill in enumerate(self._skill_list):
@@ -123,4 +127,67 @@ class SkillStrategy:
     # get all skills with their tokens in a list
     # get each new query
     # calculate the vector and how similar it is
-    # give it a reasonable threashhold
+    # give it a reasonable threshold
+
+
+class InvertedSkillIndex:
+    """A Strategy to find the respective Skill"""
+
+    inverted_index = None
+    # Looks like: "a": [[d1, 5], [d2, 8]]
+
+    # option: für jeden satz ein abgleich oder für jeden skill [alle sätze als ein datensatz]
+
+    def __init__(self):
+        self.inverted_index = dict()
+        self.phrase_skills = dict()
+
+    def register_skill(self, skill: SuperSkill):
+        """Index a new skill using call phrases"""
+        for index in range(0, len(skill.phrases)):
+            # todo: weight words
+            phrase = self._prepare_input(skill.phrases[index])
+            word_dict = self._dictionarize_phrase(phrase)
+            for word in word_dict:
+                tupel = [skill, index, word_dict[word]]
+                if word in self.inverted_index:
+                    self.inverted_index[word].append(tupel)
+                else:
+                    self.inverted_index[word] = [tupel]
+
+    @staticmethod
+    def _dot(A, B):
+        return sum(a * b for a, b in zip(A, B))
+
+    def _get_cos_sim(self, a, b):
+        return self._dot(a, b) / ((self._dot(a, a) ** .5) * (self._dot(b, b) ** .5))
+
+    def get_cos_sim_skills(self, user_input: str) -> list:
+        """return a list of skills sorted by cos similarity"""
+        # create vector from input
+        user_input = self._dictionarize_phrase(self._prepare_input(user_input))
+        print()
+        return []
+
+    def remove_skill(self, skill: SuperSkill):
+        """removes a skill from the inverted index"""
+        pass
+
+    @staticmethod
+    def _dictionarize_phrase(phrase: str):
+        result = dict()
+        bag_of_words = phrase.split(" ")
+        for word in bag_of_words:
+            if word in result:
+                result[word] += 1
+            else:
+                result[word] = 1
+        return result
+
+    @staticmethod
+    def _prepare_input(text: str) -> str:
+        """removes special characters, sets everything to lower case and """
+        special_characters_regex = "[^a-z|^0-9]"
+        text = text.lower()
+        text = re.sub(special_characters_regex, "", text)
+        return text

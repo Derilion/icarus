@@ -7,3 +7,5 @@ pyaudio
 flask
 flask-jsonpify
 flask-restful
+SpeechRecognition
+pyttsx3

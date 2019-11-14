@@ -18,6 +18,7 @@ class SuperSkill:
     version: str = "0.0"
     creator: str = "Nobody"
     tokens: list = []
+    phrases: list = []
     max_threads = 1
 
     # Queues
