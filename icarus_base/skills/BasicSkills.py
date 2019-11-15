@@ -12,6 +12,7 @@ class GreetingSkill(SuperSkill):
     version = "1.0"
     creator = ""
     tokens = ["hello", "hi", "good", "morning", "night", "heyo", "servus", "hey"]
+    phrases = ["hello", "hi", "good", "morning", "night", "heyo", "servus", "hey"]
 
     _morning_responses = ["Good morning!", "Are you awake already?", "So early.."]
     _general_responses = ["Hi", "How is it going?", "Greetings to you, fellow citizen"]
@@ -47,6 +48,7 @@ class TimeSkill(SuperSkill):
     version = "1.0"
     creator = "derilion"
     tokens = ["date", "time", "stardate"]
+    phrases = ["What is the time", "What is the stardate"]
 
     _date_response = ["It is {}, the {} of {} {}"]
     _time_Response = ["It is {}:{} {}"]
@@ -86,6 +88,7 @@ class Keanufy(SuperSkill):
     version = "1.0"
     creator = "derilion"
     tokens = ["you", "are", "breathtaking"]
+    phrases = ["you are breathtaking"]
 
     def main(self, message):
         if (self.tokens[0] in message.get_tokens()) and (self.tokens[1] in message.get_tokens()) and \
@@ -100,6 +103,7 @@ class IdentitySkill(SuperSkill):
     version = "1.0"
     creator = "Derilion"
     tokens = ["you"]
+    phrases = ["Who are you", "What are you"]
 
     responses = ["I am Icarus, an interactive assistant", "I am me", "A scary demon from the future who has eaten up all humanity"]
 

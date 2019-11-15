@@ -9,6 +9,7 @@ import inspect
 from importlib import import_module
 
 PLUGIN_PATH: str = './skills'
+STOPWORDS = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
 
 class SkillStrategy:
@@ -22,6 +23,8 @@ class SkillStrategy:
     def __init__(self, persistence):
         self.persistence = persistence
 
+        self.skill_handler = InvertedSkillIndex()
+
         # load skills
         self._load_skills()
         # start skills
@@ -30,7 +33,6 @@ class SkillStrategy:
         # load fallback skills
         self.fallback_skill = [WolframSkill(persistence), WikipediaSkill(persistence), IDKSkill(persistence)]
 
-        self.skill_handler = InvertedSkillIndex()
 
     def _start_skills(self):
         for index, skill in enumerate(self._skill_list):
@@ -56,24 +58,29 @@ class SkillStrategy:
         self.persistence.save_persistent_dict("SKILLS", skills_dict)
 
     def _register_plugin(self, plugin: SuperSkill):
-
-        for token in plugin.tokens:
-            if token in self.skills:
-                self.skills[token].append(plugin)
-            else:
-                self.skills[token] = [plugin]
+        if False:
+            for token in plugin.tokens:
+                if token in self.skills:
+                    self.skills[token].append(plugin)
+                else:
+                    self.skills[token] = [plugin]
+        else:
+            self.skill_handler.register_skill(plugin)
 
     def get_matching_skill(self, message):
-        result_dict = dict()
-        for token in message.get_tokens():
-            if token in self.skills:
-                for skill in self.skills[token]:
-                    if skill not in result_dict:
-                        result_dict[skill] = 1
-                    else:
-                        result_dict[skill] += 1
+        if False:
+            result_dict = dict()
+            for token in message.get_tokens():
+                if token in self.skills:
+                    for skill in self.skills[token]:
+                        if skill not in result_dict:
+                            result_dict[skill] = 1
+                        else:
+                            result_dict[skill] += 1
 
-        result = self._sort_skills(result_dict)
+            result = self._sort_skills(result_dict)
+        else:
+            result = self.skill_handler.get_skills(message.msg)
         result += self.fallback_skill
 
         # get skills instead of indizes
@@ -133,27 +140,37 @@ class SkillStrategy:
 class InvertedSkillIndex:
     """A Strategy to find the respective Skill"""
 
+    index = None
+    # is: [hash]: [vector_dict]
+    skill_map = None
+    # is: [hash]: [[skill, token_id]]
     inverted_index = None
-    # Looks like: "a": [[d1, 5], [d2, 8]]
+    # is: [word] : [hashlist]
+
+    threshold = 0
 
     # option: für jeden satz ein abgleich oder für jeden skill [alle sätze als ein datensatz]
 
     def __init__(self):
+        self.index = dict()
+        self.skill_map = dict()
         self.inverted_index = dict()
-        self.phrase_skills = dict()
 
     def register_skill(self, skill: SuperSkill):
         """Index a new skill using call phrases"""
+
         for index in range(0, len(skill.phrases)):
             # todo: weight words
-            phrase = self._prepare_input(skill.phrases[index])
-            word_dict = self._dictionarize_phrase(phrase)
-            for word in word_dict:
-                tupel = [skill, index, word_dict[word]]
-                if word in self.inverted_index:
-                    self.inverted_index[word].append(tupel)
+            hash_val = hash((skill, index))
+            print(str(hash_val) + ": " + skill.name)
+            word_dict = self._dictionarize_phrase(self._prepare_input(skill.phrases[index]))
+            self.index[hash_val] = word_dict
+            self.skill_map[hash_val] = [skill, index]
+            for key in word_dict.keys():
+                if key in self.inverted_index:
+                    self.inverted_index[key].append(hash_val)
                 else:
-                    self.inverted_index[word] = [tupel]
+                    self.inverted_index[key] = [hash_val]
 
     @staticmethod
     def _dot(A, B):
@@ -162,12 +179,36 @@ class InvertedSkillIndex:
     def _get_cos_sim(self, a, b):
         return self._dot(a, b) / ((self._dot(a, a) ** .5) * (self._dot(b, b) ** .5))
 
-    def get_cos_sim_skills(self, user_input: str) -> list:
+    def get_skills(self, user_input: str) -> list:
         """return a list of skills sorted by cos similarity"""
         # create vector from input
         user_input = self._dictionarize_phrase(self._prepare_input(user_input))
-        print()
-        return []
+        # get all relevant tokens
+        relevant_phrases = []
+        for word in user_input.keys():  # get values of dict
+            if word in self.inverted_index:
+                relevant_phrases = relevant_phrases + self.inverted_index[word]
+        unique_relevant_phrases = []
+        [unique_relevant_phrases.append(x) for x in relevant_phrases if x not in unique_relevant_phrases]
+        results = []
+        # build vectors and immediately do cosine similarity
+        for phrase in unique_relevant_phrases:
+            vector = []
+            for word in user_input.keys():
+                if word in self.index[phrase]:
+                    vector.append(self.index[phrase][word])
+                else:
+                    vector.append(0)
+            cos_sim = self._get_cos_sim(user_input.values(), vector)
+            if cos_sim > self.threshold:
+                results.append((phrase, cos_sim))
+
+        # sort list of tupels
+        results.sort(key=lambda tup: tup[1], reverse=True)
+        print(results)
+        for x in range(0, len(results)):
+            results[x] = self.skill_map[results[x][0]][0]  # get skill for hash and overwrite existing
+        return results
 
     def remove_skill(self, skill: SuperSkill):
         """removes a skill from the inverted index"""
@@ -176,18 +217,18 @@ class InvertedSkillIndex:
     @staticmethod
     def _dictionarize_phrase(phrase: str):
         result = dict()
-        bag_of_words = phrase.split(" ")
+        bag_of_words = sorted(phrase.split(" "))
         for word in bag_of_words:
             if word in result:
                 result[word] += 1
-            else:
+            elif word not in result and word not in STOPWORDS:
                 result[word] = 1
         return result
 
     @staticmethod
     def _prepare_input(text: str) -> str:
         """removes special characters, sets everything to lower case and """
-        special_characters_regex = "[^a-z|^0-9]"
+        special_characters_regex = "[^a-z|^0-9|^ ]"
         text = text.lower()
         text = re.sub(special_characters_regex, "", text)
         return text

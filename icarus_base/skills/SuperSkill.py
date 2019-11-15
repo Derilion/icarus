@@ -119,6 +119,7 @@ class EchoSkill(SuperSkill):
     version = "1.0"
     creator = "Derilion"
     tokens = ['say', 'repeat', 'echo']
+    phrases = ["say this", "repeat me", "echo me"]
 
     max_threads = 2
 

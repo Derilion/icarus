@@ -9,6 +9,7 @@ class WikipediaSkill(SuperSkill):
     version = "1.0"
     creator = ""
     tokens = ["wikipedia", "define"]
+    phrases = ["Who is Obama", "What is a hat", "Where was Atlantis"]
 
     _keyword = "define"
 

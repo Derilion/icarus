@@ -10,6 +10,7 @@ class CalDavSkill(SuperSkill):
     creator = "Derilion"
     version = "1.0"
     tokens = ["calendar", "appointment"]
+    phrases = ["Tell me my appointments for today", "What are my appointments", "What does my calendar say"]
 
     _user = None
     _password = None

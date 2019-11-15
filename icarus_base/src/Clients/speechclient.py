@@ -11,9 +11,6 @@ MODEL_FILE_PATH = "./porcupine/lib/common/porcupine_params.pv"  # It is availabl
 KEYWORD_FILE_PATH = './{}_linux.ppn'
 
 
-
-
-
 class SpeechClient(SuperClient):
 
     sensitivity = None
@@ -28,6 +25,11 @@ class SpeechClient(SuperClient):
         except ValueError:
             print("handling error")
             os.system('./porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {} -p linux -o .'.format(name))
+            self.setup_porcupine(name)
+        except OSError:
+            print("File not found")
+            os.system(
+                './porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {} -p linux -o .'.format(name))
             self.setup_porcupine(name)
         finally:
             self.pa = pyaudio.PyAudio()

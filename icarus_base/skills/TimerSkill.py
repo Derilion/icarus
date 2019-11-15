@@ -7,6 +7,7 @@ class IDKSkill(SuperSkill):
     version = "1.0"
     creator = "Derilion"
     tokens = ['timer']
+    phrases = ["Set a timer for five minutes"]
 
     max_threads = 15
     _response = "I have set a timer for {} seconds"

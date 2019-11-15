@@ -31,6 +31,7 @@ class WeatherSkill(SuperSkill):
     version = "1.0"
     creator = "derilion"
     tokens = ["weather"]
+    phrases = ["Will there be rain", "What is the weather in london", "Will it rain today"]
     config = None
 
     backend = None
