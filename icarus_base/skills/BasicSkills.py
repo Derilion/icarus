@@ -48,11 +48,11 @@ class TimeSkill(SuperSkill):
     version = "1.0"
     creator = "derilion"
     tokens = ["date", "time", "stardate"]
-    phrases = ["What is the time", "What is the stardate"]
+    phrases = ["What is the time", "What is the stardate", "What date is it", "What weekday is it"]
 
-    _date_response = ["It is {}, the {} of {} {}"]
-    _time_Response = ["It is {}:{} {}"]
-    _stardate_response = ["It is stardate {}"]
+    _date_response = ["It is {0}, the {1} of {2} {3}", "The date is {1} of {2} {3}"]
+    _time_Response = ["It is {0}:{1}", "Current time is {0}:{1}"]    # add am / pm
+    _stardate_response = ["It is stardate {0}", "Stardate {0}, Captain"]
 
     _cochrane_const = 2063
 
@@ -60,13 +60,28 @@ class TimeSkill(SuperSkill):
         # parsing
 
         current = datetime.now()
-        stardate = self._get_stardate(current)
+        if "stardate" in message.tokens:
+            stardate = self._get_stardate(current)
 
-        if stardate < 0:
-            stardate = stardate * -1
-            stardate = str(stardate) + " before Warp flight"
+            if stardate < 0:
+                stardate = stardate * -1
+                stardate = str(stardate) + " before Warp flight"
 
-        message.send(self._stardate_response[0].format(stardate))
+            message.send(self._stardate_response, [stardate])
+        elif "date" in message.tokens:
+            current = current.date()
+            if current.day == 1:
+                daystr = "st"
+            elif current.day == 2:
+                daystr  = "nd"
+            elif current.day == 3:
+                daystr = "rd"
+            else:
+                daystr = "th"
+            message.send(self._date_response, [current.strftime("%A"), str(current.day) +
+                                                       daystr, current.strftime("%B"), current.year])
+        else:
+            message.send(self._time_Response, [current.hour, current.minute])
 
     def _get_stardate(self, target: datetime) -> float:
         """
@@ -93,7 +108,7 @@ class Keanufy(SuperSkill):
     def main(self, message):
         if (self.tokens[0] in message.get_tokens()) and (self.tokens[1] in message.get_tokens()) and \
                 (self.tokens[2] in message.get_tokens()):
-            message.send("No, you're breathtaking!")
+            message.send("No, you are breathtaking!")
         else:
             message.run_next_skill()
 

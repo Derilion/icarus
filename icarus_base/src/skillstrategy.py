@@ -9,7 +9,7 @@ import inspect
 from importlib import import_module
 
 PLUGIN_PATH: str = './skills'
-STOPWORDS = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
+STOPWORDS = []  # ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
 
 class SkillStrategy:
@@ -147,7 +147,7 @@ class InvertedSkillIndex:
     inverted_index = None
     # is: [word] : [hashlist]
 
-    threshold = 0
+    threshold = 0.65
 
     # option: für jeden satz ein abgleich oder für jeden skill [alle sätze als ein datensatz]
 
@@ -158,7 +158,7 @@ class InvertedSkillIndex:
 
     def register_skill(self, skill: SuperSkill):
         """Index a new skill using call phrases"""
-
+        # add IDF calculation: log(N/df)
         for index in range(0, len(skill.phrases)):
             # todo: weight words
             hash_val = hash((skill, index))
@@ -227,7 +227,7 @@ class InvertedSkillIndex:
 
     @staticmethod
     def _prepare_input(text: str) -> str:
-        """removes special characters, sets everything to lower case and """
+        """removes special characters and sets everything to lower case """
         special_characters_regex = "[^a-z|^0-9|^ ]"
         text = text.lower()
         text = re.sub(special_characters_regex, "", text)

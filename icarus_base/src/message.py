@@ -45,11 +45,13 @@ class MessageInfo:
         """
         return self.tokens
 
-    def send(self, msg):
+    def send(self, msg, parameters: list = None):
         if isinstance(msg, list):
             # if its a list select an option at random
             msg = msg[randint(0, len(msg) - 1)]
         # send the message with available context
+        if parameters:
+            msg = msg.format(*parameters)
         self.client.send(str(msg), self.client_attr)
 
     def _parse(self):
