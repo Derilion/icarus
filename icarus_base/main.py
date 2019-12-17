@@ -16,6 +16,7 @@ from src.Clients.speechclient import SpeechClient
 from src.skillstrategy import SkillStrategy
 from src.restapi import RestApi, PERSISTENCE
 from src.persistence import Persistence
+from logger import console_logger, icarus_logger, logging
 
 from porcupine.binding.python.porcupine import Porcupine
 import pyaudio
@@ -65,48 +66,7 @@ class Icarus:
         self._start_clients()
 
 
-#library_path = "./porcupine/lib/linux/x86_64/libpv_porcupine.so"
-#model_path = "./porcupine/lib/common/porcupine_params.pv"
-#keyword_path = "./Jarvis_linux.ppn"
-#sensitivity = 0.5
-#handle = Porcupine(library_path, model_path, keyword_file_paths=[keyword_path], sensitivities=[sensitivity])
-#pa = pyaudio.PyAudio()
-#audio_stream = pa.open(
-#        rate=handle.sample_rate,
-#        channels=1,
-#        format=pyaudio.paInt16,
-#        input=True,
-#        frames_per_buffer=handle.frame_length
-#)
-
-
-def test_porcupine():
-    while True:
-        pcm = get_next_audio_frame()
-        keyword_index = handle.process(pcm)
-        if keyword_index is not False:
-            # detection event logic/callback
-            print("recognized")
-
-
-def get_next_audio_frame():
-    pcm = audio_stream.read(handle.frame_length)
-    pcm = struct.unpack_from("h" * handle.frame_length, pcm)
-    return pcm
-
-
-def tts(text: str):
-    engine = pyttsx3.init()
-    engine.say(text)
-    engine.setProperty('rate', 120)
-    engine.setProperty('volume', 1)
-    engine.runAndWait()
-
-
 # thread safe init
 if __name__ == "__main__":
-    # test_pers()
-    # test_porcupine()
-    # tts("test")
     Icarus().start()
     # app.run(port="10080")  # iwie unschön

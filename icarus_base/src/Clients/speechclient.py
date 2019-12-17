@@ -5,6 +5,7 @@ from gtts import gTTS
 import os
 import pyaudio
 import struct
+from logger import logging
 
 LIBRARY_PATH = "./porcupine/lib/linux/x86_64/libpv_porcupine.so"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
 MODEL_FILE_PATH = "./porcupine/lib/common/porcupine_params.pv"  # It is available at lib/common/porcupine_params.pv
@@ -24,12 +25,12 @@ class SpeechClient(SuperClient):
             self.setup_porcupine(name)
         except ValueError:
             print("handling error")
-            os.system('./porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {} -p linux -o .'.format(name))
+            os.system('./porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {0} -p linux -o .'.format(name))
             self.setup_porcupine(name)
         except OSError:
             print("File not found")
             os.system(
-                './porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {} -p linux -o .'.format(name))
+                './porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {0} -p linux -o .'.format(name))
             self.setup_porcupine(name)
         finally:
             self.pa = pyaudio.PyAudio()

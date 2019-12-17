@@ -7,6 +7,7 @@ import sys
 import re
 import inspect
 from importlib import import_module
+from logger import icarus_logger
 
 PLUGIN_PATH: str = './skills'
 STOPWORDS = []  # ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
@@ -51,7 +52,7 @@ class SkillStrategy:
             for name, obj in inspect.getmembers(sys.modules['skills.' + temp[0]]):
                 if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
 
-                    print("Discovered Plugin \"{}\"".format(obj.name))
+                    icarus_logger.info("Discovered Plugin \"{}\"".format(obj.name))
                     skills_dict[obj.name] = {"active": True, "creator": obj.creator, "version": obj.version}
                     self._skill_list.append(obj)
                     # self._register_plugin(obj)
@@ -162,7 +163,7 @@ class InvertedSkillIndex:
         for index in range(0, len(skill.phrases)):
             # todo: weight words
             hash_val = hash((skill, index))
-            print(str(hash_val) + ": " + skill.name)
+            icarus_logger.debug(str(hash_val) + ": " + skill.name)
             word_dict = self._dictionarize_phrase(self._prepare_input(skill.phrases[index]))
             self.index[hash_val] = word_dict
             self.skill_map[hash_val] = [skill, index]
@@ -205,7 +206,7 @@ class InvertedSkillIndex:
 
         # sort list of tupels
         results.sort(key=lambda tup: tup[1], reverse=True)
-        print(results)
+        icarus_logger.debug(results)
         for x in range(0, len(results)):
             results[x] = self.skill_map[results[x][0]][0]  # get skill for hash and overwrite existing
         return results
