@@ -23,9 +23,10 @@ from src.Clients.randomclient import RandomClient
 from src.Clients.cliclient import CLIClient
 from src.Clients.speechclient import SpeechClient
 from src.skillstrategy import SkillStrategy
-from src.restapi import RestApi, PERSISTENCE
+# from src.restapi import RestApi, PERSISTENCE
 from src.persistence import Persistence
 from logger import console_logger, icarus_logger, logging
+PERSISTENCE = Persistence()
 
 from porcupine.binding.python.porcupine import Porcupine
 import pyaudio
@@ -46,7 +47,7 @@ class Icarus:
         self.data_source = PERSISTENCE
         self.set_skill_strategy(SkillStrategy(self.data_source))
         self._init_clients()
-        self.rest_api = RestApi('test', self.data_source).start()
+        # self.rest_api = RestApi('test', self.data_source).start()
 
     def load_data_source(self, data_source: Persistence):
         self.data_source = data_source

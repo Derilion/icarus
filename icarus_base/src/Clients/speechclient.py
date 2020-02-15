@@ -8,7 +8,7 @@ import struct
 import platform
 from logger import logging
 
-LIBRARY_PATH = "./porcupine/lib/linux/x86_64/libpv_porcupine.so"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
+LIBRARY_PATH = "./porcupine/lib/{}/{}/libpv_porcupine.so"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
 MODEL_FILE_PATH = "./porcupine/lib/common/porcupine_params.pv"  # It is available at lib/common/porcupine_params.pv
 KEYWORD_FILE_PATH = './{}_{}.ppn'
 
@@ -27,11 +27,11 @@ class SpeechClient(SuperClient):
             self.setup_porcupine(name, system)
         except ValueError:
             print("handling error")
-            os.system('./porcupine/tools/optimizer/{0}/{1}/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {2} -p linux -o .'.format(system["os"], system["processor"], name))
+            os.system('./porcupine/tools/optimizer/{0}/x86_84/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {1} -p linux -o .'.format(system["os"], name))
             self.setup_porcupine(name, system)
         except OSError:
             print("File not found")
-            os.system('./porcupine/tools/optimizer/{0}/{1}/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {2} -p linux -o .'.format(system["os"], system["processor"], name))
+            os.system('./porcupine/tools/optimizer/{0}/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {1} -p linux -o .'.format(system["os"], name))
             self.setup_porcupine(name, system)
         finally:
             self.pa = pyaudio.PyAudio()
@@ -54,7 +54,7 @@ class SpeechClient(SuperClient):
         return result
 
     def setup_porcupine(self, name, system):
-        self.handle = Porcupine(LIBRARY_PATH, MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
+        self.handle = Porcupine(LIBRARY_PATH.format(system["lib"], system["processor"]), MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
                                 sensitivities=self.sensitivity)
 
     def _get_next_audio_frame(self):
