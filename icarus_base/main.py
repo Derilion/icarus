@@ -8,6 +8,15 @@ date: 01.07.2019
 version: 0.1a
 """
 
+"""
+TODO:
+- Installer
+- Database Structure
+- Special Characters in *.ini 
+- Setup of skills
+- Configuration of Clients
+"""
+
 # imports
 from src.Clients.telegramclient import TelegramClient
 from src.Clients.randomclient import RandomClient
@@ -25,7 +34,6 @@ import struct
 import pyttsx3
 
 
-
 class Icarus:
 
     client_threads = None
@@ -38,7 +46,7 @@ class Icarus:
         self.data_source = PERSISTENCE
         self.set_skill_strategy(SkillStrategy(self.data_source))
         self._init_clients()
-        # self.rest_api = RestApi('test', self.data_source).start()
+        self.rest_api = RestApi('test', self.data_source).start()
 
     def load_data_source(self, data_source: Persistence):
         self.data_source = data_source

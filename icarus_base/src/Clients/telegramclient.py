@@ -24,7 +24,7 @@ class TelegramClient(SuperClient):
         # start responding
         self.updater.start_polling()
 
-    def incoming_message_handler(self, sender):
+    def incoming_message_handler(self, sender, more):
         # old implementation: self._queue_new_message(context.message.text, {self.CONTEXT_IDENT: context})
         self._queue_new_message(sender.message.text, {self.CONTEXT_IDENT: sender})
 

@@ -5,11 +5,12 @@ from gtts import gTTS
 import os
 import pyaudio
 import struct
+import platform
 from logger import logging
 
 LIBRARY_PATH = "./porcupine/lib/linux/x86_64/libpv_porcupine.so"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
 MODEL_FILE_PATH = "./porcupine/lib/common/porcupine_params.pv"  # It is available at lib/common/porcupine_params.pv
-KEYWORD_FILE_PATH = './{}_linux.ppn'
+KEYWORD_FILE_PATH = './{}_{}.ppn'
 
 
 class SpeechClient(SuperClient):
@@ -19,19 +20,19 @@ class SpeechClient(SuperClient):
     pa = None
     audio_stream = None
 
-    def setup(self, name: str = 'Jarvis', sensitivity: float = 0.5):
+    def setup(self, name: str = 'Icarus', sensitivity: float = 0.5):
         self.sensitivity = [sensitivity]
+        system = self.get_system_info()
         try:
-            self.setup_porcupine(name)
+            self.setup_porcupine(name, system)
         except ValueError:
             print("handling error")
-            os.system('./porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {0} -p linux -o .'.format(name))
-            self.setup_porcupine(name)
+            os.system('./porcupine/tools/optimizer/{0}/{1}/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {2} -p linux -o .'.format(system["os"], system["processor"], name))
+            self.setup_porcupine(name, system)
         except OSError:
             print("File not found")
-            os.system(
-                './porcupine/tools/optimizer/linux/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {0} -p linux -o .'.format(name))
-            self.setup_porcupine(name)
+            os.system('./porcupine/tools/optimizer/{0}/{1}/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {2} -p linux -o .'.format(system["os"], system["processor"], name))
+            self.setup_porcupine(name, system)
         finally:
             self.pa = pyaudio.PyAudio()
             self.audio_stream = self.pa.open(
@@ -41,8 +42,19 @@ class SpeechClient(SuperClient):
                 input=True,
                 frames_per_buffer=self.handle.frame_length)
 
-    def setup_porcupine(self, name):
-        self.handle = Porcupine(LIBRARY_PATH, MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name)],
+    def get_system_info(self):
+        result = dict()
+        result["os"] = platform.system().lower()
+        result["processor"] = platform.machine()
+        if result["os"] == "linux" and "arm" in result["processor"]:
+            result["lib"] = "raspberry-pi"
+            result["processor"] = "cortex-a7"
+        else:
+            result["lib"] = result["os"]
+        return result
+
+    def setup_porcupine(self, name, system):
+        self.handle = Porcupine(LIBRARY_PATH, MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
                                 sensitivities=self.sensitivity)
 
     def _get_next_audio_frame(self):
