@@ -20,14 +20,14 @@ class SpeechClient(SuperClient):
     pa = None
     audio_stream = None
 
-    def setup(self, name: str = 'Icarus', sensitivity: float = 0.5):
+    def setup(self, name: str = 'Jarvis', sensitivity: float = 0.5):
         self.sensitivity = [sensitivity]
         system = self.get_system_info()
         try:
             self.setup_porcupine(name, system)
         except ValueError:
             print("handling error")
-            os.system('./porcupine/tools/optimizer/{0}/x86_84/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {1} -p linux -o .'.format(system["os"], name))
+            os.system('./porcupine/tools/optimizer/{0}/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {1} -p linux -o .'.format(system["os"], name))
             self.setup_porcupine(name, system)
         except OSError:
             print("File not found")
@@ -79,7 +79,9 @@ class SpeechClient(SuperClient):
 
     def stt(self):
         r = sr.Recognizer()
+
         with sr.Microphone() as source:
+            r.adjust_for_ambient_noise(source)
             print("Speak:")
             audio = r.listen(source)
 

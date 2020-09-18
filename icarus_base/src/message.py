@@ -1,6 +1,7 @@
 """Message info"""
 from random import randint
 from datetime import datetime, timedelta, timezone
+from logger import icarus_logger, console_logger
 
 
 class MessageInfo:
@@ -35,7 +36,8 @@ class MessageInfo:
 
     def run_next_skill(self):
         skill = self.skill.pop(0)
-        print("Running Skill {}".format(skill.name))
+        icarus_logger.debug("Running Skill {}".format(skill.name))
+        console_logger.debug("Running Skill {}".format(skill.name))
         skill.append_message(self)
 
     def get_tokens(self):
@@ -56,7 +58,7 @@ class MessageInfo:
 
     def _parse(self):
         """
-        Creates a token list
+        Creates a token list should be removed / changed. Async additional parsing? Web backend? POS tagging?
         """
 
         local_tokens = self.msg.lower().split()
@@ -74,7 +76,7 @@ class MessageInfo:
                                     - timedelta(days=1))
 
         if len(self.date_tokens) > 0:
-            print(self.date_tokens)
+            icarus_logger.debug("Found date tokens " + str(self.date_tokens))
 
     def __str__(self):
         return self.msg

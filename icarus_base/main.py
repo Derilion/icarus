@@ -23,16 +23,22 @@ from src.Clients.randomclient import RandomClient
 from src.Clients.cliclient import CLIClient
 from src.Clients.speechclient import SpeechClient
 from src.skillstrategy import SkillStrategy
-# from src.restapi import RestApi, PERSISTENCE
+# from src.restapi import RestApi
 from src.persistence import Persistence
 from logger import console_logger, icarus_logger, logging
+from threading import Thread, active_count
+from time import sleep, time
 PERSISTENCE = Persistence()
 
-from porcupine.binding.python.porcupine import Porcupine
-import pyaudio
-import struct
 
-import pyttsx3
+class Introspection(Thread):
+    interval = 15
+
+    def run(self) -> None:
+        start_time = time()
+        while True:
+            icarus_logger.info("Program Running with {} Threads".format(active_count()))
+            sleep(self.interval)
 
 
 class Icarus:
@@ -43,6 +49,7 @@ class Icarus:
     rest_api = None
 
     def __init__(self):
+        icarus_logger.info("Starting")
         # self.load_data_source(Persistence())
         self.data_source = PERSISTENCE
         self.set_skill_strategy(SkillStrategy(self.data_source))
@@ -61,6 +68,7 @@ class Icarus:
         # self.client_threads.append(RandomClient(self.skill_strategy))
         self.client_threads.append(TelegramClient(self.skill_strategy))
         self.client_threads.append(SpeechClient(self.skill_strategy))
+        self.client_threads.append(Introspection())
 
     def _start_clients(self):
         for client in self.client_threads:

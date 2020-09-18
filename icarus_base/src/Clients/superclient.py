@@ -1,6 +1,7 @@
 from threading import Thread, Lock
 from src.skillstrategy import SkillStrategy
 from src.message import MessageInfo
+from logger import icarus_logger
 import time
 import random
 
@@ -36,4 +37,4 @@ class SuperClient(Thread):
 
 
 class ClientStopException(Exception):
-    pass
+    icarus_logger.debug("Client stopped")

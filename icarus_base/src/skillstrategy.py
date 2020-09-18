@@ -31,7 +31,7 @@ class SkillStrategy:
         # start skills
         self._start_skills()
 
-        # load fallback skills
+        # load fallback skills in Order
         self.fallback_skill = [WolframSkill(persistence), WikipediaSkill(persistence), IDKSkill(persistence)]
 
 
@@ -52,7 +52,7 @@ class SkillStrategy:
             for name, obj in inspect.getmembers(sys.modules['skills.' + temp[0]]):
                 if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
 
-                    icarus_logger.info("Discovered Plugin \"{}\"".format(obj.name))
+                    icarus_logger.debug("Discovered Plugin \"{}\"".format(obj.name))
                     skills_dict[obj.name] = {"active": True, "creator": obj.creator, "version": obj.version}
                     self._skill_list.append(obj)
                     # self._register_plugin(obj)
