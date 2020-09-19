@@ -1,11 +1,10 @@
 from skills.SuperSkill import SuperSkill
 import requests
 
-TOKEN = "RKR533-H4G588JTUR"
-
 
 class WolframSkill(SuperSkill):
 
+    id = 'Wolfram Skill'
     name = "Wolfram Skill"
     version = "1.0"
     creator = "Derilion"
@@ -15,8 +14,7 @@ class WolframSkill(SuperSkill):
     _api_url = "http://api.wolframalpha.com/v1/spoken"
 
     def setup(self):
-        self.register_config("token")
-        self._token = self.get_config()["token"]
+        self._token = self.get_config('token')
 
     def main(self, message):
         params = {

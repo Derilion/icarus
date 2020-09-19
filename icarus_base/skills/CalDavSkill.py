@@ -6,6 +6,7 @@ from icalendar import Calendar
 
 class CalDavSkill(SuperSkill):
 
+    id = 'caldav skill'
     name = "CalDav Skill"
     creator = "Derilion"
     version = "1.0"
@@ -19,12 +20,9 @@ class CalDavSkill(SuperSkill):
     _found_str = "Found {} in {} {}. " # bla in bla minutes
 
     def setup(self):
-        self.register_config("user")
-        self.register_config("password")
-        self.register_config("calendar url")
-        self._user = self.get_config()["user"]
-        self._password = self.get_config()["password"]
-        self._url = self.get_config()["calendar url"]
+        self._user = self.get_config("user")
+        self._password = self.get_config("password")
+        self._url = self.get_config("calendar url")
 
     def main(self, message):
         response = ""

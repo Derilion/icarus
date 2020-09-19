@@ -4,7 +4,7 @@ import requests
 
 class OpenWeatherMapsEngine:
 
-    _API_KEY = None  # "f0a20f3da50bbc061ccb350c1c507e78"
+    _API_KEY = None
 
     def __init__(self, token):
         self._API_KEY = token
@@ -27,14 +27,16 @@ class OpenWeatherMapsEngine:
 
 class WeatherSkill(SuperSkill):
 
+    id = 'Weather Skill'
     name = "Weather Skill"
     version = "1.0"
     creator = "derilion"
     tokens = ["weather"]
     phrases = ["Will there be rain", "What is the weather in london", "Will it rain today"]
-    config = None
 
     backend = None
+    _api_token = None
+    _default_location = None
 
     answers_regular = "The weather is {} with {} degrees Celsius"
     answers_location = "The weather in {} is {} with {} degrees Celsius"
@@ -42,21 +44,19 @@ class WeatherSkill(SuperSkill):
                             "It seems the server does not want to talk to me"]
 
     def setup(self):
-        self.register_config("token")
-        self.register_config("default location")
-        self.config = self.get_config()
-        self.backend = OpenWeatherMapsEngine(self.config["token"])
-        # print("here i am")
+        self._api_token = self.get_config('token')
+        self._default_location = self.get_config('default location')
+        self.backend = OpenWeatherMapsEngine(self._api_token)
 
     def main(self, message):
         try:
             index = message.tokens.index("in")
             location = message.tokens[index+1]
         except ValueError:
-            location = self.config["default location"]
+            location = self._default_location
         finally:
             results = self.backend.get_weather(location)
-            if results is not None and location != self.config["default location"]:
+            if results is not None and location != self._default_location:
                 message.send(self.answers_location.format(location, results[0], results[1]))
             elif results is not None:
                 message.send(self.answers_regular.format(results[0], results[1]))

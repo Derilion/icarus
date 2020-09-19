@@ -24,7 +24,7 @@ from src.Clients.cliclient import CLIClient
 from src.Clients.speechclient import SpeechClient
 from src.skillstrategy import SkillStrategy
 # from src.restapi import RestApi
-from src.persistence import Persistence
+from src.Persistence.persistence import Persistence
 from logger import console_logger, icarus_logger, logging
 from threading import Thread, active_count
 from time import sleep, time
@@ -64,10 +64,10 @@ class Icarus:
 
     def _init_clients(self):
         self.client_threads = []
-        # self.client_threads.append(CLIClient(self.skill_strategy))
+        self.client_threads.append(CLIClient(self.skill_strategy))
         # self.client_threads.append(RandomClient(self.skill_strategy))
         self.client_threads.append(TelegramClient(self.skill_strategy))
-        self.client_threads.append(SpeechClient(self.skill_strategy))
+        # self.client_threads.append(SpeechClient(self.skill_strategy))
         self.client_threads.append(Introspection())
 
     def _start_clients(self):

@@ -5,6 +5,7 @@ import wikipedia
 
 class WikipediaSkill(SuperSkill):
 
+    id = 'Wikipedia Skill'
     name = "Wikipedia Skill"
     version = "1.0"
     creator = ""

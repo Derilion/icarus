@@ -9,3 +9,5 @@ flask-jsonpify
 flask-restful
 SpeechRecognition
 pyttsx3
+
+;FOR WINDOWS pyaudio: pip install pipwin; pipwin install pyaudio

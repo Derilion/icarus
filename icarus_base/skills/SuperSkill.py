@@ -1,9 +1,6 @@
 from threading import Thread, Lock
-from src.persistence import Persistence
-from src.persistence import SimpleDB
 import time
 import random
-import re
 
 
 class SuperSkill:
@@ -14,9 +11,10 @@ class SuperSkill:
     """
 
     # METADATA
-    name: str = "To Be Defined"
-    version: str = "0.0"
-    creator: str = "Nobody"
+    id: str = None                  # Skill identifier for internal operations, must not be changed
+    name: str = "To Be Defined"     # Userspace name
+    version: str = "0.0"            # Version string
+    creator: str = "Unknown"         # Creator name
     tokens: list = []
     phrases: list = []
     max_threads = 1
@@ -34,6 +32,8 @@ class SuperSkill:
         with self._thread_lock:
             self._threads = []
 
+        if self.id is None:
+            raise ValueError("Skill ID is not set, please define attribute self.id")
         self.setup()
 
     def main(self, message):
@@ -82,29 +82,21 @@ class SuperSkill:
                 self._threads.append(active_skill)
             active_skill.start()
 
-    def get_tokenlength(self):
-        return len(self.tokens)
+    """ Persistence API """
 
-    def register_config(self, name: str, default_val: str = ""):
-        self._persistence.register_configuration(self.name, name, default_val)
+    def get_config(self, setting_id: str) -> str:
+        return self._persistence.get_config(self.name, setting_id)
 
-    def get_config(self) -> dict:
-        return self._persistence.get_config(self.name)
+    def save_dict(self, data: dict, name: str = '') -> bool:
+        """ Saves a dict into the database backend and returns a success indicator """
+        db_identifier = self.id + name
+        return self._persistence.write_table(db_identifier, data)
 
-    def save_dict(self, data: dict, name: str = None):
-        if name is not None:
-            name = self.name + name
-        else:
-            name = self.name
-        self._persistence.save_persistent_dict(name, data)
+    def load_dict(self, name: str = '') -> dict:
+        db_identifier = self.id + name
+        return self._persistence.load_table(db_identifier)
 
-    def load_dict(self, name: str = None) -> dict:
-        if name is not None:
-            name = self.name + name
-        else:
-            name = self.name
-        return self._persistence.load_persistent_dict(name)
-
+    """ Skill init hook """
 
     def setup(self):
         pass
@@ -115,6 +107,7 @@ class EchoSkill(SuperSkill):
     Skill which returns the input after a delay
     """
 
+    id = 'basic repeat skill'
     name = "Echo"
     version = "1.0"
     creator = "Derilion"
@@ -126,11 +119,12 @@ class EchoSkill(SuperSkill):
     def main(self, message):
         time.sleep(1)
         data = self.load_dict()
-        if data is None:
-            data = {"ctr": 0}
-        data["ctr"] += 1
+        if 'ctr' in data:
+            data['ctr'] += 1
+        else:
+            data['ctr'] = 1
         self.save_dict(data)
-        print("used for {} times".format(data["ctr"]))
+        print("used for {} times".format(data['ctr']))
         result = message.msg.lower()
         if "repeat" in result:
             result = result.split("repeat", 1)[1]

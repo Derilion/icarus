@@ -8,7 +8,7 @@ import struct
 import platform
 from logger import logging
 
-LIBRARY_PATH = "./porcupine/lib/{}/{}/libpv_porcupine.so"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
+LIBRARY_PATH = "./porcupine/lib/{}/{}/{}"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
 MODEL_FILE_PATH = "./porcupine/lib/common/porcupine_params.pv"  # It is available at lib/common/porcupine_params.pv
 KEYWORD_FILE_PATH = './{}_{}.ppn'
 
@@ -54,8 +54,14 @@ class SpeechClient(SuperClient):
         return result
 
     def setup_porcupine(self, name, system):
-        self.handle = Porcupine(LIBRARY_PATH.format(system["lib"], system["processor"]), MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
-                                sensitivities=self.sensitivity)
+        if system["os"] == 'windows':
+            self.handle = Porcupine(LIBRARY_PATH.format(system["lib"], system["processor"], 'libpv_porcupine.dll'),
+                                    MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
+                                    sensitivities=self.sensitivity)
+        else:
+            self.handle = Porcupine(LIBRARY_PATH.format(system["lib"], system["processor"], 'libpv_porcupine.so'),
+                                    MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
+                                    sensitivities=self.sensitivity)
 
     def _get_next_audio_frame(self):
         pcm = self.audio_stream.read(self.handle.frame_length)

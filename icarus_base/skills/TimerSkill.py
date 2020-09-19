@@ -3,6 +3,8 @@ from time import sleep
 
 
 class IDKSkill(SuperSkill):
+
+    id = 'Basic Timer'
     name = "Timer Skill"
     version = "1.0"
     creator = "Derilion"

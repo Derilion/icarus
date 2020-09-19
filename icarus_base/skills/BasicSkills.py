@@ -8,6 +8,8 @@ from datetime import datetime
 
 
 class GreetingSkill(SuperSkill):
+
+    id = 'Basic Greeting Skill'
     name = "Greeting Skill"
     version = "1.0"
     creator = ""
@@ -29,6 +31,8 @@ class GreetingSkill(SuperSkill):
 
 
 class IDKSkill(SuperSkill):
+
+    id = 'Fallback Skill'
     name = "Unknown Interaction Skill"
     version = "1.0"
     creator = "Derilion"
@@ -44,6 +48,8 @@ class IDKSkill(SuperSkill):
 
 
 class TimeSkill(SuperSkill):
+
+    id = 'Basic Time Skill'
     name = "Time Skill"
     version = "1.0"
     creator = "derilion"
@@ -99,6 +105,8 @@ class TimeSkill(SuperSkill):
 
 
 class Keanufy(SuperSkill):
+
+    id = 'Keanufy Skill'
     name = "Keanufy Skill"
     version = "1.0"
     creator = "derilion"
@@ -112,8 +120,10 @@ class Keanufy(SuperSkill):
         else:
             message.run_next_skill()
 
+
 class IdentitySkill(SuperSkill):
 
+    id = 'Identity Skill'
     name = "WhoAmI"
     version = "1.0"
     creator = "Derilion"

@@ -56,7 +56,8 @@ class SkillStrategy:
                     skills_dict[obj.name] = {"active": True, "creator": obj.creator, "version": obj.version}
                     self._skill_list.append(obj)
                     # self._register_plugin(obj)
-        self.persistence.save_persistent_dict("SKILLS", skills_dict)
+        # not sure why i would want to save that
+        # self.persistence.save_persistent_dict("SKILLS", skills_dict)
 
     def _register_plugin(self, plugin: SuperSkill):
         if False:
