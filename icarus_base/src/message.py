@@ -29,7 +29,7 @@ class MessageInfo:
         self.tokens = list()
         self.date_tokens = list()
         self.intent_tokens = list()
-        self._parse()
+        # self._parse()             # temporarily disabled, runtime impairment high
 
     def set_skill(self, skill: list):
         self.skill = skill

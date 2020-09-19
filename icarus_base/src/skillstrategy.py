@@ -9,7 +9,7 @@ import inspect
 from importlib import import_module
 from logger import icarus_logger
 
-PLUGIN_PATH: str = './skills'
+PLUGIN_PATH: str = os.path.join('.', 'skills')
 STOPWORDS = []  # ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
 
@@ -17,7 +17,7 @@ class SkillStrategy:
 
     _skill_list = list()
     skills = dict()
-    fallback_skill = None
+    fallback_skills: list = None
     persistence = None
     skill_handler = None
 
@@ -32,8 +32,7 @@ class SkillStrategy:
         self._start_skills()
 
         # load fallback skills in Order
-        self.fallback_skill = [WolframSkill(persistence), WikipediaSkill(persistence), IDKSkill(persistence)]
-
+        self.fallback_skills = [WolframSkill(persistence), WikipediaSkill(persistence), IDKSkill(persistence)]
 
     def _start_skills(self):
         for index, skill in enumerate(self._skill_list):
@@ -55,39 +54,13 @@ class SkillStrategy:
                     icarus_logger.debug("Discovered Plugin \"{}\"".format(obj.name))
                     skills_dict[obj.name] = {"active": True, "creator": obj.creator, "version": obj.version}
                     self._skill_list.append(obj)
-                    # self._register_plugin(obj)
-        # not sure why i would want to save that
-        # self.persistence.save_persistent_dict("SKILLS", skills_dict)
 
     def _register_plugin(self, plugin: SuperSkill):
-        if False:
-            for token in plugin.tokens:
-                if token in self.skills:
-                    self.skills[token].append(plugin)
-                else:
-                    self.skills[token] = [plugin]
-        else:
             self.skill_handler.register_skill(plugin)
 
     def get_matching_skill(self, message):
-        if False:
-            result_dict = dict()
-            for token in message.get_tokens():
-                if token in self.skills:
-                    for skill in self.skills[token]:
-                        if skill not in result_dict:
-                            result_dict[skill] = 1
-                        else:
-                            result_dict[skill] += 1
-
-            result = self._sort_skills(result_dict)
-        else:
-            result = self.skill_handler.get_skills(message.msg)
-        result += self.fallback_skill
-
-        # get skills instead of indizes
-        # for index, skill in enumerate(result):
-        #    result[index] = self._skill_list[skill]
+        result = self.skill_handler.get_skills(message.msg)
+        result += self.fallback_skills
 
         message.set_skill(result)
 
@@ -133,23 +106,15 @@ class SkillStrategy:
         # remove files
         pass
 
-    # get all skills with their tokens in a list
-    # get each new query
-    # calculate the vector and how similar it is
-    # give it a reasonable threshold
-
 
 class InvertedSkillIndex:
     """A Strategy to find the respective Skill"""
 
-    index = None
-    # is: [hash]: [vector_dict]
-    skill_map = None
-    # is: [hash]: [[skill, token_id]]
-    inverted_index = None
-    # is: [word] : [hashlist]
+    index: dict = None              # is: [hash]: [vector_dict]
+    skill_map: dict = None          # is: [hash]: [[skill, token_id]]
+    inverted_index: dict = None     # is: [word]: [hashlist]
 
-    threshold = 0.65
+    threshold = 0.65                # minimal similarity rating to appear in the result list
 
     # option: für jeden satz ein abgleich oder für jeden skill [alle sätze als ein datensatz]
 
@@ -176,9 +141,11 @@ class InvertedSkillIndex:
 
     @staticmethod
     def _dot(A, B):
+        """ matrix multiplication """
         return sum(a * b for a, b in zip(A, B))
 
     def _get_cos_sim(self, a, b):
+        """ calculates cosinus similarity for two lists"""
         return self._dot(a, b) / ((self._dot(a, a) ** .5) * (self._dot(b, b) ** .5))
 
     def get_skills(self, user_input: str) -> list:

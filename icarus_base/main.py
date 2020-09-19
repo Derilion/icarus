@@ -23,22 +23,10 @@ from src.Clients.randomclient import RandomClient
 from src.Clients.cliclient import CLIClient
 from src.Clients.speechclient import SpeechClient
 from src.skillstrategy import SkillStrategy
+from src.SkillManagement.skillmanager import SkillManager
 # from src.restapi import RestApi
 from src.Persistence.persistence import Persistence
 from logger import console_logger, icarus_logger, logging
-from threading import Thread, active_count
-from time import sleep, time
-PERSISTENCE = Persistence()
-
-
-class Introspection(Thread):
-    interval = 15
-
-    def run(self) -> None:
-        start_time = time()
-        while True:
-            icarus_logger.info("Program Running with {} Threads".format(active_count()))
-            sleep(self.interval)
 
 
 class Icarus:
@@ -51,24 +39,23 @@ class Icarus:
     def __init__(self):
         icarus_logger.info("Starting")
         # self.load_data_source(Persistence())
-        self.data_source = PERSISTENCE
-        self.set_skill_strategy(SkillStrategy(self.data_source))
+        self.data_source = Persistence()
+        self.set_skill_strategy(SkillManager(self.data_source))
         self._init_clients()
         # self.rest_api = RestApi('test', self.data_source).start()
 
     def load_data_source(self, data_source: Persistence):
         self.data_source = data_source
 
-    def set_skill_strategy(self, skill_strategy: SkillStrategy):
+    def set_skill_strategy(self, skill_strategy: SkillManager):
         self.skill_strategy = skill_strategy
 
     def _init_clients(self):
         self.client_threads = []
-        self.client_threads.append(CLIClient(self.skill_strategy))
-        # self.client_threads.append(RandomClient(self.skill_strategy))
-        self.client_threads.append(TelegramClient(self.skill_strategy))
-        # self.client_threads.append(SpeechClient(self.skill_strategy))
-        self.client_threads.append(Introspection())
+        self.client_threads.append(CLIClient(self.skill_strategy, self.data_source))
+        # self.client_threads.append(RandomClient(self.skill_strategy, self.data_source))
+        self.client_threads.append(TelegramClient(self.skill_strategy, self.data_source))
+        # self.client_threads.append(SpeechClient(self.skill_strategy, self.data_source))
 
     def _start_clients(self):
         for client in self.client_threads:

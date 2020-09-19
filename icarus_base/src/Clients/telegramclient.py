@@ -3,7 +3,7 @@ from src.Clients.superclient import SuperClient
 from logger import icarus_logger
 
 from telegram.ext import Updater, Filters, MessageHandler
-BOT_TOKEN = "839599567:AAHy91zA1ePG4vbwlwz-_9prlsPJ1dnkteE"
+BOT_TOKEN = ""
 
 
 class TelegramClient(SuperClient):
@@ -14,7 +14,7 @@ class TelegramClient(SuperClient):
 
     def run(self):
         # init connection
-        self.updater = Updater(token=BOT_TOKEN, use_context=True)
+        self.updater = Updater(token=self.persistence.get_config('Telegram', 'token'), use_context=True)
         self.dispatcher = self.updater.dispatcher
 
         # append handler
