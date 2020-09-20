@@ -11,3 +11,4 @@ SpeechRecognition
 pyttsx3
 
 ;FOR WINDOWS pyaudio: pip install pipwin; pipwin install pyaudio
+;FOR OSX portaudio: brew install portaudio; pip install pyaudio

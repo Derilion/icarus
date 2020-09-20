@@ -42,18 +42,19 @@ class SkillManager:
         # search all files in plugin path
         for file in os.listdir(PLUGIN_PATH):
 
-            # import all files into python
-            temp = file.rsplit('.py', 1)
-            import_module('skills.' + temp[0])
+            if 'py' in file:
+                # import all files into python
+                temp = file.rsplit('.py', 1)
+                import_module('skills.' + temp[0])
 
-            # check if any contained classes are children of "SuperSkill"
-            for name, obj in inspect.getmembers(sys.modules['skills.' + temp[0]]):
-                if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
-                    icarus_logger.debug("Discovered Plugin \"{}\"".format(obj.name))
+                # check if any contained classes are children of "SuperSkill"
+                for name, obj in inspect.getmembers(sys.modules['skills.' + temp[0]]):
+                    if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
+                        icarus_logger.debug("Discovered Plugin \"{}\"".format(obj.name))
 
-                    # init object and hand over to indexer
-                    skill = obj(self.persistence)
-                    self.skill_handler.register_skill(skill)
+                        # init object and hand over to indexer
+                        skill = obj(self.persistence)
+                        self.skill_handler.register_skill(skill)
 
     def find_skills(self, msg: MessageInfo):
         """ Gets an ordered list of skills and attaches them to the message """

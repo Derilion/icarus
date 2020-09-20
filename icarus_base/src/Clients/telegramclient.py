@@ -3,6 +3,7 @@ from src.Clients.superclient import SuperClient
 from logger import icarus_logger
 
 from telegram.ext import Updater, Filters, MessageHandler
+from telegram.error import InvalidToken
 BOT_TOKEN = ""
 
 
@@ -13,9 +14,13 @@ class TelegramClient(SuperClient):
     CONTEXT_IDENT = "context"
 
     def run(self):
-        # init connection
-        self.updater = Updater(token=self.persistence.get_config('Telegram', 'token'), use_context=True)
-        self.dispatcher = self.updater.dispatcher
+        try:
+            # init connection
+            self.updater = Updater(token=self.persistence.get_config('Telegram', 'token'), use_context=True)
+            self.dispatcher = self.updater.dispatcher
+        except InvalidToken:
+            # todo: add logging
+            return
 
         # append handler
         echo_handler = MessageHandler(Filters.text, self.incoming_message_handler)
