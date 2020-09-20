@@ -2,7 +2,7 @@
 
 # Icarus
 
-A project to create a modular digital assistant with voice support.
+A project to create a modular digital assistant with voice support licensed under [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
 
 _Notice: This program is still very much under development. Everything is provided as is and will probably change a lot by later versions._
 
@@ -29,6 +29,8 @@ Setting up a Python virtual environment as described [here](https://packaging.py
 
 For general usage a given text or speech input will be processed and a response will be given on the same channel. By default a command line client is included and can respond to text queries based on the installed skills.
 
+The currently only supported hotword to activate voice itneraction is 'Jarvis'.
+
 ### Installation of Skills
 Skill files need to be copied to the `icarus_base/skills/` directory. When Icarus is restarted it will automatically recognize skills and enable them.
 
@@ -37,7 +39,7 @@ Client files need to be copied to the `icarus_base/src/Clients/` directory. When
 
 ## How to write new Skills
 
-For Skills a straightforward API is given via inheritance. Inherit from `skills.superclient.SuperClient` and set values for self.id and the skill can be loaded. 
+For Skills a straightforward API is given via inheritance. Inherit from `skills.superclient.SuperClient`, set values for self.id and the skill can be loaded. 
 
 General parameters which should be set are:
 - self.id: unique id
