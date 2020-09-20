@@ -1,10 +1,10 @@
-python-telegram-bot
+python-telegram-bot >= 12.4.2
 gtts
 wikipedia
-caldav
-icalendar
+caldav >= 0.6.2
+icalendar >= 4.0.4
 pyaudio
-flask
+flask >= 1.0.2
 flask-jsonpify
 flask-restful
 SpeechRecognition

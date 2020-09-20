@@ -12,7 +12,7 @@ from logger import logging
 LIBRARY_PATH = os.path.join('.', 'porcupine', 'lib', '{0}', '{1}', '{2}')               # Path to Porcupine's C library
 MODEL_FILE_PATH = os.path.join('.', 'porcupine', 'lib', 'common', 'porcupine_params.pv')
 LICENSE_CREATION = os.path.join('.', 'porcupine', 'tools', 'optimizer', '{0}', '{1}', 'pv_porcupine_optimizer') \
-                   + ' -r ' + os.path.join('.', 'porcupine', 'resources', 'optimizer_data') + '-w {2} -p {0} -o'
+                   + ' -r ' + os.path.join('.', 'porcupine', 'resources', 'optimizer_data') + ' -w {2} -p {0} -o .'
 KEYWORD_FILE_PATH = './{0}_{1}.ppn'
 PLING_MP3 = os.path.join('.', 'pling.mp3')
 
@@ -76,8 +76,10 @@ class SpeechClient(SuperClient):
                 pcm = self._get_next_audio_frame()
                 keyword_index = self.handle.process(pcm)
                 if keyword_index is not False:
-                    playsound(PLING_MP3)
-                    # os.system("mpg123 ./pling.mp3")
+                    if platform.system().lower() == 'windows':
+                        playsound(PLING_MP3)
+                    else:
+                        os.system("mpg123 ./pling.mp3")
                     self.stt()
         except KeyboardInterrupt:
             print("stopping")
@@ -105,5 +107,7 @@ class SpeechClient(SuperClient):
     def send(self, message: str, client_attr):
         tts = gTTS(text=message, lang='en')
         tts.save("tts_message.mp3")
-        playsound("tts_message.mp3")
-        # os.system("mpg123 tts_message.mp3")
+        if platform.system().lower() == 'windows':
+            playsound("tts_message.mp3")
+        else:
+            os.system("mpg123 tts_message.mp3")
