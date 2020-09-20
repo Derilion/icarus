@@ -6,11 +6,15 @@ import os
 import pyaudio
 import struct
 import platform
+from playsound import playsound
 from logger import logging
 
-LIBRARY_PATH = "./porcupine/lib/{}/{}/{}"  # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/
-MODEL_FILE_PATH = "./porcupine/lib/common/porcupine_params.pv"  # It is available at lib/common/porcupine_params.pv
-KEYWORD_FILE_PATH = './{}_{}.ppn'
+LIBRARY_PATH = os.path.join('.', 'porcupine', 'lib', '{0}', '{1}', '{2}')               # Path to Porcupine's C library
+MODEL_FILE_PATH = os.path.join('.', 'porcupine', 'lib', 'common', 'porcupine_params.pv')
+LICENSE_CREATION = os.path.join('.', 'porcupine', 'tools', 'optimizer', '{0}', '{1}', 'pv_porcupine_optimizer') \
+                   + ' -r ' + os.path.join('.', 'porcupine', 'resources', 'optimizer_data') + '-w {2} -p {0} -o'
+KEYWORD_FILE_PATH = './{0}_{1}.ppn'
+PLING_MP3 = os.path.join('.', 'pling.mp3')
 
 
 class SpeechClient(SuperClient):
@@ -25,13 +29,9 @@ class SpeechClient(SuperClient):
         system = self.get_system_info()
         try:
             self.setup_porcupine(name, system)
-        except ValueError:
+        except (ValueError, OSError):
             print("handling error")
-            os.system('./porcupine/tools/optimizer/{0}/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {1} -p linux -o .'.format(system["os"], name))
-            self.setup_porcupine(name, system)
-        except OSError:
-            print("File not found")
-            os.system('./porcupine/tools/optimizer/{0}/x86_64/pv_porcupine_optimizer -r ./porcupine/resources/optimizer_data -w {1} -p linux -o .'.format(system["os"], name))
+            os.system(LICENSE_CREATION.format(system["os"], system["processor"], name))
             self.setup_porcupine(name, system)
         finally:
             self.pa = pyaudio.PyAudio()
@@ -42,7 +42,8 @@ class SpeechClient(SuperClient):
                 input=True,
                 frames_per_buffer=self.handle.frame_length)
 
-    def get_system_info(self):
+    @staticmethod
+    def get_system_info():
         result = dict()
         result["os"] = platform.system().lower()
         result["processor"] = platform.machine()
@@ -75,7 +76,8 @@ class SpeechClient(SuperClient):
                 pcm = self._get_next_audio_frame()
                 keyword_index = self.handle.process(pcm)
                 if keyword_index is not False:
-                    os.system("mpg123 ./pling.mp3")
+                    playsound(PLING_MP3)
+                    # os.system("mpg123 ./pling.mp3")
                     self.stt()
         except KeyboardInterrupt:
             print("stopping")
@@ -103,4 +105,5 @@ class SpeechClient(SuperClient):
     def send(self, message: str, client_attr):
         tts = gTTS(text=message, lang='en')
         tts.save("tts_message.mp3")
-        os.system("mpg123 tts_message.mp3")
+        playsound("tts_message.mp3")
+        # os.system("mpg123 tts_message.mp3")
