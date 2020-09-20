@@ -17,16 +17,20 @@ TODO:
 - Configuration of Clients
 """
 
-# imports
-from src.Clients.telegramclient import TelegramClient
-from src.Clients.randomclient import RandomClient
-from src.Clients.cliclient import CLIClient
-from src.Clients.speechclient import SpeechClient
-from src.skillstrategy import SkillStrategy
+# general imports
+from src.Clients.superclient import SuperClient
 from src.SkillManagement.skillmanager import SkillManager
 # from src.restapi import RestApi
 from src.Persistence.persistence import Persistence
 from logger import console_logger, icarus_logger, logging
+
+# imports for module discovery
+from importlib import import_module
+import os
+import sys
+import inspect
+
+CLIENT_PATH = os.path.join('.', 'src', 'Clients')
 
 
 class Icarus:
@@ -47,11 +51,24 @@ class Icarus:
         self.skill_strategy = skill_strategy
 
     def _init_clients(self):
+        """ Discovers installed clients """
         self.client_threads = []
-        self.client_threads.append(CLIClient(self.skill_strategy, self.data_source))
-        # self.client_threads.append(RandomClient(self.skill_strategy, self.data_source))
-        self.client_threads.append(TelegramClient(self.skill_strategy, self.data_source))
-        self.client_threads.append(SpeechClient(self.skill_strategy, self.data_source))
+
+        # search all files in plugin path
+        for file in os.listdir(CLIENT_PATH):
+
+            if 'py' in file:
+                # import all files into python
+                temp = file.rsplit('.py', 1)
+                import_module('src.Clients.' + temp[0])
+
+                # check if any contained classes are children of "SuperSkill"
+                for name, obj in inspect.getmembers(sys.modules['src.Clients.' + temp[0]]):
+                    if inspect.isclass(obj) and issubclass(obj, SuperClient) and obj is not SuperClient:
+                        icarus_logger.debug("Discovered Client \"{}\"".format(temp[0]))
+
+                        # append and init found clients
+                        self.client_threads.append(obj(self.skill_strategy, self.data_source))
 
     def _start_clients(self):
         for client in self.client_threads:

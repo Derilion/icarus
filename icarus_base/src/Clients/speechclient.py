@@ -111,3 +111,5 @@ class SpeechClient(SuperClient):
             playsound("tts_message.mp3")
         else:
             os.system("mpg123 tts_message.mp3")
+        if os.path.isfile("tts_message.mp3"):
+            os.remove("tts_message.mp3")

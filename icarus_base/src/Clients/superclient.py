@@ -1,7 +1,7 @@
 from threading import Thread
 from src.SkillManagement.skillmanager import SkillManager
 from src.Persistence.persistence import Persistence
-from src.message import MessageInfo
+from src.message import Context
 from logger import icarus_logger
 import random
 
@@ -23,7 +23,7 @@ class SuperClient(Thread):
         # print("Added new Message: {} to queue of length {}".format(message, len(self.inbound_fifo)))
         if message is "":
             return
-        message = MessageInfo(message, self, client_opt)
+        message = Context(message, self, client_opt)
 
         self.skill_handler.find_skills(message)
         message.run_next_skill()

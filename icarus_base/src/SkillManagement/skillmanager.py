@@ -11,7 +11,7 @@ import inspect
 # import used classes
 from src.Persistence.persistence import Persistence
 from src.SkillManagement.InvertedIndex import InvertedSkillIndex
-from src.message import MessageInfo
+from src.message import Context
 from logger import icarus_logger
 
 # import fallback skills
@@ -56,7 +56,7 @@ class SkillManager:
                         skill = obj(self.persistence)
                         self.skill_handler.register_skill(skill)
 
-    def find_skills(self, msg: MessageInfo):
+    def find_skills(self, msg: Context):
         """ Gets an ordered list of skills and attaches them to the message """
         result = self.skill_handler.get_skills(msg.msg)     # get list of skills from the skill handler
         result += self.fallback_skills                      # attach fallback skills to the end

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from logger import icarus_logger, console_logger
 
 
-class MessageInfo:
+class Context:
     """
     The object transporting the message and metadata for each user query
 
@@ -29,7 +29,7 @@ class MessageInfo:
         self.tokens = list()
         self.date_tokens = list()
         self.intent_tokens = list()
-        # self._parse()             # temporarily disabled, runtime impairment high
+        self._parse()
 
     def set_skill(self, skill: list):
         self.skill = skill
@@ -66,17 +66,17 @@ class MessageInfo:
             if token not in self.tokens:
                 self.tokens.append(token)
 
-        if "today" in local_tokens:
-            self.date_tokens.append((datetime.now(timezone.utc)).replace(hour=0, minute=0, second=0, microsecond=0))
-        if "tomorrow" in local_tokens:
-            self.date_tokens.append(datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-                                    + timedelta(days=1))
-        if "yesterday" in local_tokens:
-            self.date_tokens.append(datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-                                    - timedelta(days=1))
-
-        if len(self.date_tokens) > 0:
-            icarus_logger.debug("Found date tokens " + str(self.date_tokens))
+        # if "today" in local_tokens:
+        #     self.date_tokens.append((datetime.now(timezone.utc)).replace(hour=0, minute=0, second=0, microsecond=0))
+        # if "tomorrow" in local_tokens:
+        #     self.date_tokens.append(datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        #                             + timedelta(days=1))
+        # if "yesterday" in local_tokens:
+        #     self.date_tokens.append(datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        #                             - timedelta(days=1))
+        #
+        # if len(self.date_tokens) > 0:
+        #     icarus_logger.debug("Found date tokens " + str(self.date_tokens))
 
     def __str__(self):
         return self.msg
