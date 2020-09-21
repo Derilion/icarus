@@ -23,6 +23,12 @@ class Context:
     intent_tokens: list = None  # intents if they are found
 
     def __init__(self, msg, client, client_attr: dict = None):
+        """
+        Initialises a Context object which handles information exchange between clients and skills
+        :param msg: input which will be casted to string, usually a text interaction
+        :param client: client reference
+        :param client_attr: optional client specific information for interaction context, defaults to None
+        """
         self.msg = str(msg)
         self.client = client
         self.client_attr = client_attr
@@ -32,9 +38,21 @@ class Context:
         self._parse()
 
     def set_skill(self, skill: list):
+        """
+        Set list of skills ordered by probability of match
+        :param skill:
+        :return:
+        """
         self.skill = skill
 
     def run_next_skill(self):
+        """
+        Loads next skill from list of matching skills, returns if none are found
+        :return:
+        """
+        if len(self.skill) < 1:
+            # todo: log out of skills
+            return
         skill = self.skill.pop(0)
         icarus_logger.debug("Running Skill {}".format(skill.name))
         console_logger.debug("Running Skill {}".format(skill.name))
@@ -42,16 +60,23 @@ class Context:
 
     def get_tokens(self):
         """
-        Getter for tokens
+        Getter for message string tokens
         :return: list
         """
         return self.tokens
 
     def send(self, msg, parameters: list = None):
+        """
+        Sends response through client context
+        :param msg: a string or list of strings
+        :param parameters: formatting information which should be placed inside a format string
+        :return:
+        """
         if isinstance(msg, list):
             # if its a list select an option at random
             msg = msg[randint(0, len(msg) - 1)]
         # send the message with available context
+        # todo: implement length mismatch error
         if parameters:
             msg = msg.format(*parameters)
         self.client.send(str(msg), self.client_attr)

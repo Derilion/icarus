@@ -15,6 +15,7 @@ TODO:
 - Special Characters in *.ini 
 - Setup of skills
 - Configuration of Clients
+- multi language support
 """
 
 # general imports
