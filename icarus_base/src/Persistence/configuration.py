@@ -22,6 +22,9 @@ class IniConfiguration(SuperConfiguration):
         """
             Read configuration string from ini file
             Note: could also be implemented to separate by file, not section
+        :param config_id: section name
+        :param option_id: setting name
+        :return: string content if option was found, empty string if not
         """
 
         # load options using configparser library

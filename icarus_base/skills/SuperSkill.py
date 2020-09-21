@@ -1,4 +1,5 @@
 from threading import Thread, Lock
+from src.context import Context
 import time
 import random
 
@@ -26,17 +27,29 @@ class SuperSkill:
     _threads: list = None
 
     def __init__(self, persistence):
+        """
+        initialise any skill
+        :param persistence: persistence object for unified persistent data access
+        """
         self._persistence = persistence
+
+        # clear skill input queue
         with self._message_lock:
             self._messages = []
+        # clear skill worker list
         with self._thread_lock:
             self._threads = []
 
+        # verify required skill data is set
         if self.id is None:
             raise ValueError("Skill ID is not set, please define attribute self.id")
         self.setup()
 
-    def main(self, message):
+    def main(self, message: Context):
+        """
+        skill main routine, needs to be overloaded by inheriting classes
+        :param message: context providing client interaction and input data
+        """
         raise ValueError("Skill functionality is not defined")
 
     class _SkillThread(Thread):
@@ -62,6 +75,7 @@ class SuperSkill:
                     # print("thread {} acting".format(self.id))
                     skill = self.skill._messages.pop(0)
                     self.skill._message_lock.release()
+                    # run skill
                     self.skill.main(skill)
                 else:
                     self.skill._message_lock.release()
@@ -71,7 +85,12 @@ class SuperSkill:
                 # print("thread {} terminated".format(self.id))
                 self.skill._threads.remove(self)
 
-    def append_message(self, message):
+    def append_message(self, message: Context):
+        """
+        Add Context object to worker queue
+        :param message: context object
+        :return:
+        """
 
         self._messages.append(message)
 
@@ -85,20 +104,39 @@ class SuperSkill:
     """ Persistence API """
 
     def get_config(self, setting_id: str) -> str:
+        """
+        Gets setting from configuration backend by skill id and setting name
+        :param setting_id: setting name
+        :return: setting string if found, empty string if not found
+        """
         return self._persistence.get_config(self.name, setting_id)
 
-    def save_dict(self, data: dict, name: str = '') -> bool:
-        """ Saves a dict into the database backend and returns a success indicator """
-        db_identifier = self.id + name
+    def save_dict(self, data: dict, identifier: str = '') -> bool:
+        """
+        Saves a dict into the database backend by skill identifier and table id
+        :param data: data to be saved
+        :param identifier: identifier of table, defaults to ''
+        :return: True if saving worked, False if not
+        """
+        db_identifier = self.id + identifier
         return self._persistence.write_table(db_identifier, data)
 
-    def load_dict(self, name: str = '') -> dict:
-        db_identifier = self.id + name
+    def load_dict(self, identifier: str = '') -> dict:
+        """
+        Loads saved data from the database
+        :param identifier: table identifier, defaults to ''
+        :return: filled dictionary if data is found, empty dictionary if nothing is loaded
+        """
+        db_identifier = self.id + identifier
         return self._persistence.load_table(db_identifier)
 
     """ Skill init hook """
 
     def setup(self):
+        """
+        Method if initial setup is required before skill actually is used
+        - Overload this method to do a setup of your skill before actual runtime
+        """
         pass
 
 
