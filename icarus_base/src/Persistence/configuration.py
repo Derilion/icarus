@@ -12,7 +12,7 @@ class SuperConfiguration:
 
 
 CONFIG_PATH = "."
-DEFAULT_FILE = "config"
+DEFAULT_FILE = "settings"
 
 
 class IniConfiguration(SuperConfiguration):
