@@ -1,4 +1,4 @@
-from porcupine.binding.python.porcupine import Porcupine
+from porcupine_bak.binding.python.porcupine import Porcupine
 from src.Clients.superclient import SuperClient
 import speech_recognition as sr
 from gtts import gTTS
@@ -7,7 +7,8 @@ import pyaudio
 import struct
 import platform
 from playsound import playsound
-from logger import logging
+import git
+from logger import logging, icarus_logger
 
 LIBRARY_PATH = os.path.join('.', 'porcupine', 'lib', '{0}', '{1}', '{2}')               # Path to Porcupine's C library
 MODEL_FILE_PATH = os.path.join('.', 'porcupine', 'lib', 'common', 'porcupine_params.pv')
@@ -25,6 +26,9 @@ class SpeechClient(SuperClient):
     audio_stream = None
 
     def setup(self, name: str = 'Jarvis', sensitivity: float = 0.5):
+        # download porcupine if not installed
+        self._install_porcupine()
+
         self.sensitivity = [sensitivity]
         system = self.get_system_info()
         try:
@@ -41,6 +45,17 @@ class SpeechClient(SuperClient):
                 format=pyaudio.paInt16,
                 input=True,
                 frames_per_buffer=self.handle.frame_length)
+
+    @staticmethod
+    def _install_porcupine():
+        """
+        Installs porcupine if required
+        Note: not using the python package because it does not support windows
+        :return:
+        """
+
+        pass
+
 
     @staticmethod
     def get_system_info():
