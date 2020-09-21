@@ -134,7 +134,7 @@ dmypy.json
 .pyre/
 
 # Configuration Files
-*.ini
+settings.ini
 
 # Logs
 *.log
