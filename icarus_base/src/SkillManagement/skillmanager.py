@@ -42,7 +42,7 @@ class SkillManager:
         # search all files in plugin path
         for file in os.listdir(PLUGIN_PATH):
 
-            if 'py' in file:
+            if file.endswith('.py'):
                 # import all files into python
                 temp = file.rsplit('.py', 1)
                 import_module('skills.' + temp[0])

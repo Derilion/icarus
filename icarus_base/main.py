@@ -57,7 +57,7 @@ class Icarus:
         # search all files in plugin path
         for file in os.listdir(CLIENT_PATH):
 
-            if 'py' in file:
+            if file.endswith('.py'):
                 # import all files into python
                 temp = file.rsplit('.py', 1)
                 import_module('src.Clients.' + temp[0])
