@@ -21,6 +21,7 @@ TODO:
 # imports
 from src.icarus import Icarus
 
+
 # thread safe init
 if __name__ == "__main__":
     Icarus().start()

@@ -1,4 +1,3 @@
-from porcupine_bak.binding.python.porcupine import Porcupine
 from src.Clients.superclient import SuperClient
 import speech_recognition as sr
 from gtts import gTTS
@@ -6,15 +5,10 @@ import os
 import pyaudio
 import struct
 import platform
+import pvporcupine
 from playsound import playsound
-import git
 from logger import logging, icarus_logger
 
-LIBRARY_PATH = os.path.join('.', 'porcupine', 'lib', '{0}', '{1}', '{2}')               # Path to Porcupine's C library
-MODEL_FILE_PATH = os.path.join('.', 'porcupine', 'lib', 'common', 'porcupine_params.pv')
-LICENSE_CREATION = os.path.join('.', 'porcupine', 'tools', 'optimizer', '{0}', '{1}', 'pv_porcupine_optimizer') \
-                   + ' -r ' + os.path.join('.', 'porcupine', 'resources', 'optimizer_data') + ' -w {2} -p {0} -o .'
-KEYWORD_FILE_PATH = './{0}_{1}.ppn'
 PLING_MP3 = os.path.join('.', 'pling.mp3')
 
 
@@ -25,59 +19,18 @@ class SpeechClient(SuperClient):
     pa = None
     audio_stream = None
 
-    def setup(self, name: str = 'Jarvis', sensitivity: float = 0.5):
-        # download porcupine if not installed
-        self._install_porcupine()
+    def setup(self, name: str = 'jarvis', sensitivity: float = 0.5):
 
         self.sensitivity = [sensitivity]
-        system = self.get_system_info()
-        try:
-            self.setup_porcupine(name, system)
-        except (ValueError, OSError):
-            print("handling error")
-            os.system(LICENSE_CREATION.format(system["os"], system["processor"], name))
-            self.setup_porcupine(name, system)
-        finally:
-            self.pa = pyaudio.PyAudio()
-            self.audio_stream = self.pa.open(
-                rate=self.handle.sample_rate,
-                channels=1,
-                format=pyaudio.paInt16,
-                input=True,
-                frames_per_buffer=self.handle.frame_length)
 
-    @staticmethod
-    def _install_porcupine():
-        """
-        Installs porcupine if required
-        Note: not using the python package because it does not support windows
-        :return:
-        """
-
-        pass
-
-
-    @staticmethod
-    def get_system_info():
-        result = dict()
-        result["os"] = platform.system().lower()
-        result["processor"] = platform.machine()
-        if result["os"] == "linux" and "arm" in result["processor"]:
-            result["lib"] = "raspberry-pi"
-            result["processor"] = "cortex-a7"
-        else:
-            result["lib"] = result["os"]
-        return result
-
-    def setup_porcupine(self, name, system):
-        if system["os"] == 'windows':
-            self.handle = Porcupine(LIBRARY_PATH.format(system["lib"], system["processor"], 'libpv_porcupine.dll'),
-                                    MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
-                                    sensitivities=self.sensitivity)
-        else:
-            self.handle = Porcupine(LIBRARY_PATH.format(system["lib"], system["processor"], 'libpv_porcupine.so'),
-                                    MODEL_FILE_PATH, keyword_file_paths=[KEYWORD_FILE_PATH.format(name, system["os"])],
-                                    sensitivities=self.sensitivity)
+        self.handle = pvporcupine.create(keywords=[name])
+        self.pa = pyaudio.PyAudio()
+        self.audio_stream = self.pa.open(
+            rate=self.handle.sample_rate,
+            channels=1,
+            format=pyaudio.paInt16,
+            input=True,
+            frames_per_buffer=self.handle.frame_length)
 
     def _get_next_audio_frame(self):
         pcm = self.audio_stream.read(self.handle.frame_length)
@@ -91,10 +44,6 @@ class SpeechClient(SuperClient):
                 pcm = self._get_next_audio_frame()
                 keyword_index = self.handle.process(pcm)
                 if keyword_index is not False:
-                    if platform.system().lower() == 'windows':
-                        playsound(PLING_MP3)
-                    else:
-                        os.system("mpg123 ./pling.mp3")
                     self.stt()
         except KeyboardInterrupt:
             print("stopping")
@@ -102,13 +51,21 @@ class SpeechClient(SuperClient):
         finally:
             print('stopped')
 
+    def _play_init(self):
+        try:
+            playsound(PLING_MP3)
+        except ModuleNotFoundError:
+            # arch has a problem with python-gobject, using mpg123 as fallback
+            os.system("mpg123 ./pling.mp3 >/dev/null 2>&1")
+
     def stt(self):
         r = sr.Recognizer()
 
         with sr.Microphone() as source:
-            r.adjust_for_ambient_noise(source)
+            r.adjust_for_ambient_noise(source, 0.5)
+            self._play_init()
             print("Speak:")
-            audio = r.listen(source)
+            audio = r.listen(source, timeout=2, phrase_time_limit=4)
 
         try:
             result = r.recognize_google(audio)
@@ -125,6 +82,6 @@ class SpeechClient(SuperClient):
         if platform.system().lower() == 'windows':
             playsound("tts_message.mp3")
         else:
-            os.system("mpg123 tts_message.mp3")
+            os.system("mpg123 tts_message.mp3 >/dev/null 2>&1")
         if os.path.isfile("tts_message.mp3"):
             os.remove("tts_message.mp3")
