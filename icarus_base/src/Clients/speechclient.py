@@ -2,12 +2,10 @@ from src.Clients.superclient import SuperClient
 import speech_recognition as sr
 from gtts import gTTS
 import os
-import pyaudio
-import struct
 import platform
-import pvporcupine
 from playsound import playsound
 from logger import logging, icarus_logger
+from src.Clients.WakeWordEngines.porcupine import Porcupine
 
 PLING_MP3 = os.path.join('.', 'pling.mp3')
 
@@ -18,40 +16,18 @@ class SpeechClient(SuperClient):
     handle = None
     pa = None
     audio_stream = None
+    wake_word_handler = None
 
-    def setup(self, name: str = 'jarvis', sensitivity: float = 0.5):
-
-        self.sensitivity = [sensitivity]
-
-        self.handle = pvporcupine.create(keywords=[name])
-        self.pa = pyaudio.PyAudio()
-        self.audio_stream = self.pa.open(
-            rate=self.handle.sample_rate,
-            channels=1,
-            format=pyaudio.paInt16,
-            input=True,
-            frames_per_buffer=self.handle.frame_length)
-
-    def _get_next_audio_frame(self):
-        pcm = self.audio_stream.read(self.handle.frame_length)
-        pcm = struct.unpack_from("h" * self.handle.frame_length, pcm)
-        return pcm
+    def setup(self):
+        self.wake_word_handler = Porcupine()
 
     def run(self):
         self.setup()
-        try:
-            while not self.stop_request:
-                pcm = self._get_next_audio_frame()
-                keyword_index = self.handle.process(pcm)
-                if keyword_index is not False:
-                    self.stt()
-        except KeyboardInterrupt:
-            print("stopping")
+        while True:
+            self.wake_word_handler.monitor_audio(self.stt)
 
-        finally:
-            print('stopped')
-
-    def _play_init(self):
+    @staticmethod
+    def _play_init():
         try:
             playsound(PLING_MP3)
         except ModuleNotFoundError:
