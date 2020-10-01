@@ -53,6 +53,7 @@ class SpeechClient(SuperClient):
             print("Could not request results; {0}".format(e))
 
     def send(self, message: str, client_attr):
+        message = self.message2morse(message)
         tts = gTTS(text=message, lang='en')
         tts.save("tts_message.mp3")
         if platform.system().lower() == 'windows':
@@ -61,3 +62,32 @@ class SpeechClient(SuperClient):
             os.system("mpg123 tts_message.mp3 >/dev/null 2>&1")
         if os.path.isfile("tts_message.mp3"):
             os.remove("tts_message.mp3")
+
+    def message2morse(self,message):
+        # Dictionary representing the morse code chart
+        MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
+                            'C':'-.-.', 'D':'-..', 'E':'.',
+                            'F':'..-.', 'G':'--.', 'H':'....',
+                            'I':'..', 'J':'.---', 'K':'-.-',
+                            'L':'.-..', 'M':'--', 'N':'-.',
+                            'O':'---', 'P':'.--.', 'Q':'--.-',
+                            'R':'.-.', 'S':'...', 'T':'-',
+                            'U':'..-', 'V':'...-', 'W':'.--',
+                            'X':'-..-', 'Y':'-.--', 'Z':'--..',
+                            '1':'.----', '2':'..---', '3':'...--',
+                            '4':'....-', '5':'.....', '6':'-....',
+                            '7':'--...', '8':'---..', '9':'----.',
+                            '0':'-----', ', ':'--..--', '.':'.-.-.-',
+                            '?':'..--..', '/':'-..-.', '-':'-....-',
+                            '(':'-.--.', ')':'-.--.-'}
+        morse = ''
+        for letter in message.upper():
+            if letter == ' ':
+                morse += ' '
+            elif letter in MORSE_CODE_DICT:
+                morse += MORSE_CODE_DICT[letter] + ' '
+            else:
+                morse += ''
+        morse = morse.replace('.',"Beep")
+        morse = morse.replace('_',"Beeeeeeep")
+        return morse
