@@ -53,7 +53,8 @@ class SpeechClient(SuperClient):
             print("Could not request results; {0}".format(e))
 
     def send(self, message: str, client_attr):
-        message = self.message2morse(message)
+        if self.persistence.get_config('SpeechClient', 'morse'):
+            message = self.message2morse(message)
         tts = gTTS(text=message, lang='en')
         tts.save("tts_message.mp3")
         if platform.system().lower() == 'windows':
