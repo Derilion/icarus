@@ -7,7 +7,7 @@ setup(
    name='Icarus',
    version='0.1',
    description='A modular personal assistant',
-   license="GPGv3",
+   license="MIT",
    long_description=long_description,
    author='derilion',
    author_email='foo@mail.com',

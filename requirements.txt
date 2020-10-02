@@ -1,9 +1,9 @@
+# Client Dependencies
 python-telegram-bot >= 12.4.2
 gtts
-wikipedia
-caldav >= 0.6.2
-icalendar >= 4.0.4
 pyaudio
+# FOR WINDOWS pyaudio: pip install pipwin; pipwin install pyaudio
+# FOR OSX portaudio: brew install portaudio; pip install pyaudio
 flask >= 1.0.2
 flask-jsonpify
 flask-restful
@@ -12,5 +12,7 @@ pyttsx3
 playsound
 pvporcupine
 
-;FOR WINDOWS pyaudio: pip install pipwin; pipwin install pyaudio
-;FOR OSX portaudio: brew install portaudio; pip install pyaudio
+# Skill Dependencies
+wikipedia
+caldav >= 0.6.2
+icalendar >= 4.0.4
