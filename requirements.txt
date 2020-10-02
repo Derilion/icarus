@@ -1,7 +1,7 @@
 # Client Dependencies
 python-telegram-bot >= 12.4.2
-gtts
-pyaudio
+gtts>=2.1.1
+pyaudio>=0.2.11
 # FOR WINDOWS pyaudio: pip install pipwin; pipwin install pyaudio
 # FOR OSX portaudio: brew install portaudio; pip install pyaudio
 flask >= 1.0.2
@@ -9,10 +9,11 @@ flask-jsonpify
 flask-restful
 SpeechRecognition
 pyttsx3
-playsound
-pvporcupine
+playsound>=1.2.2
+pvporcupine>=1.8.1
 
 # Skill Dependencies
-wikipedia
+wikipedia>=1.4.0
 caldav >= 0.6.2
 icalendar >= 4.0.4
+requests>=2.24.0
