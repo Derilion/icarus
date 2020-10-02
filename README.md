@@ -2,7 +2,7 @@
 
 # Icarus
 
-A project to create a modular digital assistant with voice support licensed under [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
+A project to create a modular digital assistant with voice support licensed under [MIT License](https://choosealicense.com/licenses/mit/)
 
 _Notice: This program is still very much under development. Everything is provided as is and will probably change a lot by later versions._
 
