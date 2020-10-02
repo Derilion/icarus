@@ -5,7 +5,10 @@ import os
 import platform
 from playsound import playsound
 from logger import logging, icarus_logger
-from src.Clients.WakeWordEngines.porcupine import Porcupine
+try:
+    from src.Clients.WakeWordEngines.porcupine import Porcupine
+except OSError:
+    icarus_logger.warning('Tried using porcupine with windows')
 
 PLING_MP3 = os.path.join('.', 'pling.mp3')
 
@@ -17,6 +20,11 @@ class SpeechClient(SuperClient):
     pa = None
     audio_stream = None
     wake_word_handler = None
+
+    def __init__(self, skill_handler, persistence):
+        if platform.system() == 'Windows':
+            raise OSError
+        super().__init__(skill_handler, persistence)
 
     def setup(self):
         self.wake_word_handler = Porcupine()

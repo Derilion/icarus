@@ -59,8 +59,11 @@ class Icarus:
                     if inspect.isclass(obj) and issubclass(obj, SuperClient) and obj is not SuperClient:
                         icarus_logger.debug("Discovered Client \"{}\"".format(temp[0]))
 
-                        # append and init found clients
-                        self.client_threads.append(obj(self.skill_strategy, self.data_source))
+                        try:
+                            # append and init found clients
+                            self.client_threads.append(obj(self.skill_strategy, self.data_source))
+                        except OSError:
+                            icarus_logger.error("Could not load Client \"{}\"".format(obj.name))
 
     def _stop_clients(self):
         """ send stop request to all clients """

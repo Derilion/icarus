@@ -53,8 +53,11 @@ class SkillManager:
                         icarus_logger.debug("Discovered Plugin \"{}\"".format(obj.name))
 
                         # init object and hand over to indexer
-                        skill = obj(self.persistence)
-                        self.skill_handler.register_skill(skill)
+                        try:
+                            skill = obj(self.persistence)
+                            self.skill_handler.register_skill(skill)
+                        except OSError:
+                            icarus_logger.error("Could not import module \"{}\"".format(obj.name))
 
     def find_skills(self, msg: Context):
         """ Gets an ordered list of skills and attaches them to the message """
