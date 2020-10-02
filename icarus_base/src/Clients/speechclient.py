@@ -54,7 +54,7 @@ class SpeechClient(SuperClient):
 
     def send(self, message: str, client_attr):
         if self.persistence.get_config('SpeechClient', 'morse'):
-            message = self.message2morse(message)
+            message = self._message2morse(message)
         tts = gTTS(text=message, lang='en')
         tts.save("tts_message.mp3")
         if platform.system().lower() == 'windows':
@@ -64,7 +64,7 @@ class SpeechClient(SuperClient):
         if os.path.isfile("tts_message.mp3"):
             os.remove("tts_message.mp3")
 
-    def message2morse(self,message):
+    def _message2morse(self,message):
         # Dictionary representing the morse code chart
         MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                             'C':'-.-.', 'D':'-..', 'E':'.',
@@ -89,6 +89,6 @@ class SpeechClient(SuperClient):
                 morse += MORSE_CODE_DICT[letter] + ' '
             else:
                 morse += ''
-        morse = morse.replace('.',"Beep")
-        morse = morse.replace('_',"Beeeeeeep")
+        morse = morse.replace('.', "Beep")
+        morse = morse.replace('_', "Beeeeeeep")
         return morse
