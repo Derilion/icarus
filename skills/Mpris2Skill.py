@@ -26,8 +26,7 @@ class IDKSkill(SuperSkill):
             if unit[0] in message.tokens:
                 action = unit[1]
         if action == 0:
-            message.send("Rest in peperonis")
-            message.send("No action found")
+            message.run_next_skill()
             return
         uri = next(get_players_uri())
         player = Player(dbus_interface_info={'dbus_uri': uri})
