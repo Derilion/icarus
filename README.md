@@ -10,7 +10,7 @@ _Notice: This program is still very much under development. Everything is provid
 Setting up a Python virtual environment as described [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) is strongly recommended. Only tested for Python >= 3.8. __Windows is currently not supported for the speech client, will come back soon__
 
 1. Clone the repository to a place of your liking
-2. Install requirements from requirements.txt `pip install -r requirements.txt`
+2. Install pyaudio manually for your system as described [here](http://people.csail.mit.edu/hubert/pyaudio/)
     - Windows needs to install pyaudio using winpip
         ``` bash
             pip install pipwin
@@ -21,14 +21,15 @@ Setting up a Python virtual environment as described [here](https://packaging.py
             brew install portaudio
             pip install pyaudio
         ```
-3. Set up given tokens and configurations in `icarus_base/settings.ini`, a template is given in `icarus_base/example_settings.ini`
-4. Run `python icarus_base/main.py`
+3. Install requirements from requirements.txt `pip install -r requirements.txt`
+4. Set up given tokens and configurations in `icarus_base/settings.ini`, a template is given in `icarus_base/example_settings.ini`
+5. Run `python icarus_base/main.py`
 
 ## Usage
 
 For general usage a given text or speech input will be processed and a response will be given on the same channel. By default a command line client is included and can respond to text queries based on the installed skills.
 
-The currently only supported hotword to activate voice itneraction is 'Jarvis'.
+The currently only supported hotword to activate voice interaction is 'Jarvis'.
 
 ### Installation of Skills
 Skill files need to be copied to the `icarus_base/skills/` directory. When Icarus is restarted it will automatically recognize skills and enable them.
