@@ -3,6 +3,7 @@
 """
 from threading import Lock
 import pickle
+import os
 
 
 class SuperDatabase:
@@ -14,7 +15,7 @@ class SuperDatabase:
         pass
 
 
-SERIAL_DB_PATH = './persistence.va'
+SERIAL_DB_PATH = os.path.join('database', 'persistence.va')
 
 
 class SerialDatabase(SuperDatabase):

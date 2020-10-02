@@ -4,13 +4,13 @@ from gtts import gTTS
 import os
 import platform
 from playsound import playsound
-from logger import logging, icarus_logger
+from src.logger import icarus_logger
 try:
     from src.Clients.WakeWordEngines.porcupine import Porcupine
 except OSError:
     icarus_logger.warning('Tried using porcupine with windows')
 
-PLING_MP3 = os.path.join('.', 'pling.mp3')
+PLING_MP3 = os.path.join('resources', 'pling.mp3')
 
 
 class SpeechClient(SuperClient):

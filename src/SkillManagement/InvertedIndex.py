@@ -3,7 +3,7 @@
 """
 
 from skills.SuperSkill import SuperSkill
-from logger import icarus_logger
+from src.logger import icarus_logger
 import re
 
 STOPWORDS = []      # here can be words which should be ignored

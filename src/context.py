@@ -1,7 +1,6 @@
 """Message info"""
 from random import randint
-from datetime import datetime, timedelta, timezone
-from logger import icarus_logger, console_logger
+from src.logger import icarus_logger, console_logger
 
 
 class Context:

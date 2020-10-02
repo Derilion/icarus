@@ -4,11 +4,11 @@ from logging import getLogger, FileHandler, Formatter
 
 LOG_FORMAT = Formatter("%(asctime)s [%(levelname)s]: %(message)s")
 LOG_LEVEL = logging.DEBUG
-LOG_FILE = "./logs/icarus.log"
+LOG_FILE = "../logs/icarus.log"
 
 # make sure directory exists
-if not os.path.exists(os.path.join('.', 'logs')):
-    os.makedirs(os.path.join('.', 'logs'))
+if not os.path.exists(os.path.join('..', 'logs')):
+    os.makedirs(os.path.join('..', 'logs'))
 
 logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", datefmt='%Y/%m/%d %H:%M:%S', level=logging.ERROR)
 console_logger = getLogger("console_logger")

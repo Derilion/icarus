@@ -1,6 +1,6 @@
 
 from src.Clients.superclient import SuperClient
-from logger import icarus_logger
+from src.logger import icarus_logger
 
 from telegram.ext import Updater, Filters, MessageHandler
 from telegram.error import InvalidToken

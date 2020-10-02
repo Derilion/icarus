@@ -12,7 +12,7 @@ import inspect
 from src.Persistence.persistence import Persistence
 from src.SkillManagement.InvertedIndex import InvertedSkillIndex
 from src.context import Context
-from logger import icarus_logger
+from src.logger import icarus_logger
 
 # import fallback skills
 from skills.WolframSkill import WolframSkill

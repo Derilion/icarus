@@ -2,7 +2,7 @@ from threading import Thread
 from src.SkillManagement.skillmanager import SkillManager
 from src.Persistence.persistence import Persistence
 from src.context import Context
-from logger import icarus_logger
+from src.logger import icarus_logger
 import random
 
 
@@ -35,7 +35,7 @@ class SuperClient(Thread):
         :return:
         """
         # print("Added new Message: {} to queue of length {}".format(message, len(self.inbound_fifo)))
-        if message is "":
+        if message == "":
             return
         message = Context(message, self, client_opt)
 

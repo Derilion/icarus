@@ -7,7 +7,7 @@ from src.Clients.superclient import SuperClient
 from src.SkillManagement.skillmanager import SkillManager
 # from src.restapi import RestApi
 from src.Persistence.persistence import Persistence
-from logger import console_logger, icarus_logger, logging
+from src.logger import icarus_logger
 
 # imports for module discovery
 from importlib import import_module
