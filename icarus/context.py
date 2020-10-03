@@ -80,6 +80,14 @@ class Context:
             msg = msg.format(*parameters)
         self.client.send(str(msg), self.client_attr)
 
+    def notify(self, notification_text: str = None):
+        """
+        Sends a notification via the client context, supports e.g. sounds for timers
+        :param notification_text: optional string for a notification text
+        :return:
+        """
+        self.client.notify(self.client_attr, notification_text)
+
     def _parse(self):
         """
         Creates a token list should be removed / changed. Async additional parsing? Web backend? POS tagging?

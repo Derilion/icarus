@@ -50,7 +50,24 @@ class SuperClient(Thread):
         self.stop_request = True
 
     def send(self, message: str, client_attr):
+        """
+        Sends a message using the defined client
+        :param message: string to send using the client
+        :param client_attr: additional client information
+        :return:
+        """
         pass
+
+    def notify(self, client_attr, notification_text: str = ''):
+        """
+        Sends a notification on supporting clients, sends a standard message as default
+        :param client_attr: additional client information
+        :param notification_text: additional information string to be sent as message
+        :return:
+        """
+        if notification_text == '':
+            notification_text = 'Beep'
+        self.send(notification_text, client_attr)
 
 
 class ClientStopException(Exception):
