@@ -1,10 +1,10 @@
-from Icarus.skills.SuperSkill import SuperSkill
+from icarus.skills.SuperSkill import SuperSkill
 from mpris2 import get_players_uri
 from mpris2 import Player
 from dbus.mainloop.glib import DBusGMainLoop
 
 
-class IDKSkill(SuperSkill):
+class MPRISMusicPlayer(SuperSkill):
 
     id = 'Music Player'
     name = "Music Skill"
@@ -14,7 +14,7 @@ class IDKSkill(SuperSkill):
     phrases = ["Toggle music", "Play audio", "Next track"]
 
     _response = "Music {}"
-    _actions = [["play",1], ["pause",2], ["toggle", 3] , ["next",4],["previous", 5], ["info", 6]]
+    _actions = [["play", 1], ["pause", 2], ["toggle", 3], ["next", 4], ["previous", 5], ["info", 6]]
 
     def main(self, message):
         action = 0
@@ -41,6 +41,5 @@ class IDKSkill(SuperSkill):
         elif action == 6:
             message.send(player.Metadata)
 
-
-        message.send("Action acomplished")
+        message.send("Action accomplished")
 
