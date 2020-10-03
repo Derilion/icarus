@@ -2,8 +2,7 @@
 General skills required for basic fallback and identity interaction
 """
 
-from skills.SuperSkill import SuperSkill
-from random import randint
+from icarus.skills.SuperSkill import SuperSkill
 from datetime import datetime
 
 

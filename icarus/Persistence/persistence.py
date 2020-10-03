@@ -3,11 +3,11 @@
     Implemented as strategy to unify access
 """
 from threading import Lock
-from src.Persistence.database import SuperDatabase, SerialDatabase
-from src.Persistence.configuration import SuperConfiguration, IniConfiguration
+from icarus.Persistence.database import SuperDatabase, SerialDatabase
+from icarus.Persistence.configuration import IniConfiguration
 
 
-class Persistence(SuperDatabase, SuperConfiguration):
+class Persistence(SuperDatabase):
     _db = None
     _config = None
 
@@ -26,7 +26,7 @@ class Persistence(SuperDatabase, SuperConfiguration):
                     Persistence._instance = super(Persistence, cls).__new__(cls, *args, **kwargs)
         return Persistence._instance
 
-    def __init__(self, db: SuperDatabase = SerialDatabase(), config: SuperConfiguration = IniConfiguration()):
+    def __init__(self, db: SuperDatabase = SerialDatabase(), config: IniConfiguration = IniConfiguration()):
         """
         Initialises persistence object with a specified database and configuration strategy
         :param db: database interaction handler
@@ -43,7 +43,7 @@ class Persistence(SuperDatabase, SuperConfiguration):
         """
         self._db = db
 
-    def set_config_strategy(self, config: SuperConfiguration):
+    def set_config_strategy(self, config: IniConfiguration):
         """
         Setter to change configuration strategy at runtime
         :param config: configuraiton handler

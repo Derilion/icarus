@@ -1,18 +1,20 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-with open("../README.md", 'r') as f:
+with open("README.md", 'r') as f:
     long_description = f.read()
 
 setup(
    name='Icarus',
    version='0.1',
-   description='A modular personal assistant',
+   description='A modular digital assistant',
    license="MIT",
    long_description=long_description,
+   long_description_content_type="text/markdown",
    author='derilion',
-   author_email='foo@mail.com',
    url="http://www.github.com/derilion/icarus/",
-   packages=['src', 'skills', 'src.Clients', 'src.Persistence', 'src.SkillManagement'],
+   platforms=['nt', 'posix'],
+   packages=find_packages(),
+   include_package_data=True,
    install_requires=['pyaudio',
                      'pyttsx3',
                      'gtts',
@@ -25,8 +27,11 @@ setup(
                      'caldav',
                      'icalendar'
                      ],  # todo: need to be updated to actual dependencies
-   scripts=[
-            'logger.py',
-            'main.py',
-           ]
+   entry_points={
+            'console_scripts': [
+                'Icarus=icarus:run',
+            ],
+        },
+   python_requires='>=3.7',
+   keywords="modular, digital assistant, icarus, jarvis, raspberry",
 )

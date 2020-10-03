@@ -19,8 +19,7 @@ TODO:
 """
 
 # imports
-from src.icarus import Icarus
-
+from icarus.icarus import Icarus
 
 # thread safe init
 if __name__ == "__main__":

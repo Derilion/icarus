@@ -1,9 +1,7 @@
-from skills.SuperSkill import SuperSkill
+from Icarus.skills.SuperSkill import SuperSkill
 from mpris2 import get_players_uri
 from mpris2 import Player
-from mpris2 import Playlists, TrackList
 from dbus.mainloop.glib import DBusGMainLoop
-
 
 
 class IDKSkill(SuperSkill):

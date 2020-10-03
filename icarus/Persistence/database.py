@@ -1,6 +1,7 @@
 """
     Superclass for database implementations
 """
+from appdirs import user_data_dir
 from threading import Lock
 import pickle
 import os
@@ -15,7 +16,8 @@ class SuperDatabase:
         pass
 
 
-SERIAL_DB_PATH = os.path.join('database', 'persistence.va')
+SERIAL_DB_PATH = user_data_dir('icarus', 'derilion')
+SERIAl_DB_FILE = os.path.join(SERIAL_DB_PATH, 'persistence.va')
 
 
 class SerialDatabase(SuperDatabase):
@@ -23,15 +25,17 @@ class SerialDatabase(SuperDatabase):
     _db_path = None
     _db_lock = None
 
-    def __init__(self, db_path: str = SERIAL_DB_PATH):
+    def __init__(self, db_path: str = SERIAl_DB_FILE):
         self._db_path = db_path
         self._db_lock = Lock()
+        if not os.path.exists(SERIAL_DB_PATH):
+            os.makedirs(SERIAL_DB_PATH)
 
     def load_table(self, table_id: str) -> dict:
         """ Load a dict from serialized database """
         try:
             result = pickle.load(open(self._db_path, "rb"))[table_id]
-        except (FileNotFoundError, KeyError, pickle.UnpicklingError):
+        except (PermissionError, FileNotFoundError, KeyError, pickle.UnpicklingError):
             # todo: implement logging
             result = dict()
         return result
@@ -44,7 +48,7 @@ class SerialDatabase(SuperDatabase):
             # load data from database file if it exists
             try:
                 database = pickle.load(open(self._db_path, "rb"))
-            except FileNotFoundError:
+            except (PermissionError, FileNotFoundError, KeyError, pickle.UnpicklingError):
                 database = dict()
 
             # overwrite existing content

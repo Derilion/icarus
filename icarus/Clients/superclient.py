@@ -1,8 +1,8 @@
 from threading import Thread
-from src.SkillManagement.skillmanager import SkillManager
-from src.Persistence.persistence import Persistence
-from src.context import Context
-from src.logger import icarus_logger
+from icarus.SkillManagement.skillmanager import SkillManager
+from icarus.Persistence.persistence import Persistence
+from icarus.context import Context
+from icarus.logging import icarus_logger
 import random
 
 

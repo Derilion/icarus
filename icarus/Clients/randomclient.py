@@ -1,4 +1,4 @@
-from src.Clients.superclient import SuperClient
+from icarus.Clients.superclient import SuperClient
 import time
 import random
 

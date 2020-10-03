@@ -2,8 +2,8 @@
     Inverted Index to calculate cosine similarity
 """
 
-from skills.SuperSkill import SuperSkill
-from src.logger import icarus_logger
+from icarus.skills.SuperSkill import SuperSkill
+from icarus.logging import icarus_logger
 import re
 
 STOPWORDS = []      # here can be words which should be ignored

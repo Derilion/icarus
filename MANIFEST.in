@@ -1,0 +1,3 @@
+include icarus/LICENSE.md
+include icarus/README.md
+recursive-include icarus/resources *

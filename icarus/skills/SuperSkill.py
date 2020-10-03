@@ -1,5 +1,5 @@
 from threading import Thread, Lock
-from src.context import Context
+from icarus.context import Context
 import time
 import random
 

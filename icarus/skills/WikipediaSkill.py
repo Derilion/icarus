@@ -1,4 +1,4 @@
-from skills.SuperSkill import SuperSkill
+from icarus.skills.SuperSkill import SuperSkill
 import re
 import wikipedia
 

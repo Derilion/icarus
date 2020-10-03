@@ -9,18 +9,19 @@ from importlib import import_module
 import inspect
 
 # import used classes
-from src.Persistence.persistence import Persistence
-from src.SkillManagement.InvertedIndex import InvertedSkillIndex
-from src.context import Context
-from src.logger import icarus_logger
+from icarus import Persistence
+from icarus.SkillManagement.InvertedIndex import InvertedSkillIndex
+from icarus.context import Context
+from icarus.logging import icarus_logger
 
 # import fallback skills
-from skills.WolframSkill import WolframSkill
-from skills.WikipediaSkill import WikipediaSkill
-from skills.BasicSkills import SuperSkill, IDKSkill
+from icarus.skills.WolframSkill import WolframSkill
+from icarus.skills.WikipediaSkill import WikipediaSkill
+from icarus.skills.BasicSkills import IDKSkill
+from icarus.skills.SuperSkill import SuperSkill
 
 # statics
-PLUGIN_PATH: str = os.path.join('.', 'skills')
+PLUGIN_PATH: str = os.path.join(os.path.dirname(__file__), '..', 'skills')
 
 
 class SkillManager:
@@ -45,10 +46,10 @@ class SkillManager:
             if file.endswith('.py'):
                 # import all files into python
                 temp = file.rsplit('.py', 1)
-                import_module('skills.' + temp[0])
+                import_module('icarus.skills.' + temp[0])
 
                 # check if any contained classes are children of "SuperSkill"
-                for name, obj in inspect.getmembers(sys.modules['skills.' + temp[0]]):
+                for name, obj in inspect.getmembers(sys.modules['icarus.skills.' + temp[0]]):
                     if inspect.isclass(obj) and issubclass(obj, SuperSkill) and obj is not SuperSkill:
                         icarus_logger.debug("Discovered Plugin \"{}\"".format(obj.name))
 

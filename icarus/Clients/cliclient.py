@@ -1,4 +1,4 @@
-from src.Clients.superclient import SuperClient, ClientStopException
+from icarus.Clients.superclient import SuperClient, ClientStopException
 
 
 class CLIClient(SuperClient):

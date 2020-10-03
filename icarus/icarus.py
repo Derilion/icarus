@@ -2,12 +2,13 @@
     Icarus class
     Central program instance, controls init, thread spawning and shutdown
 """
+
 # general imports
-from src.Clients.superclient import SuperClient
-from src.SkillManagement.skillmanager import SkillManager
+from icarus.Clients.superclient import SuperClient
+from icarus.SkillManagement.skillmanager import SkillManager
 # from src.restapi import RestApi
-from src.Persistence.persistence import Persistence
-from src.logger import icarus_logger
+from icarus.Persistence.persistence import Persistence
+from icarus.logging import icarus_logger
 
 # imports for module discovery
 from importlib import import_module
@@ -15,7 +16,7 @@ import os
 import sys
 import inspect
 
-CLIENT_PATH = os.path.join('.', 'src', 'Clients')
+CLIENT_PATH = os.path.join(os.path.dirname(__file__), 'Clients')
 
 
 class Icarus:
@@ -52,10 +53,10 @@ class Icarus:
             if file.endswith('.py'):
                 # import all files into python
                 temp = file.rsplit('.py', 1)
-                import_module('src.Clients.' + temp[0])
+                import_module('icarus.Clients.' + temp[0])
 
                 # check if any contained classes are children of "SuperSkill"
-                for name, obj in inspect.getmembers(sys.modules['src.Clients.' + temp[0]]):
+                for name, obj in inspect.getmembers(sys.modules['icarus.Clients.' + temp[0]]):
                     if inspect.isclass(obj) and issubclass(obj, SuperClient) and obj is not SuperClient:
                         icarus_logger.debug("Discovered Client \"{}\"".format(temp[0]))
 

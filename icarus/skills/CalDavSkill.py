@@ -1,4 +1,4 @@
-from skills.SuperSkill import SuperSkill
+from icarus.skills.SuperSkill import SuperSkill
 import caldav
 from datetime import datetime, timezone, timedelta, date
 from icalendar import Calendar

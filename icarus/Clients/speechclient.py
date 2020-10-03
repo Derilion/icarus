@@ -1,16 +1,16 @@
-from src.Clients.superclient import SuperClient
+from icarus.Clients.superclient import SuperClient
 import speech_recognition as sr
 from gtts import gTTS
 import os
 import platform
 from playsound import playsound
-from src.logger import icarus_logger
+from icarus.logging import icarus_logger
 try:
-    from src.Clients.WakeWordEngines.porcupine import Porcupine
+    from icarus.Clients.WakeWordEngines.porcupine import Porcupine
 except OSError:
     icarus_logger.warning('Tried using porcupine with windows')
 
-PLING_MP3 = os.path.join('resources', 'pling.mp3')
+PLING_MP3 = os.path.join(os.path.dirname(__file__), '../resources/pling.mp3')
 
 
 class SpeechClient(SuperClient):
@@ -62,7 +62,7 @@ class SpeechClient(SuperClient):
 
     def send(self, message: str, client_attr):
         if self.persistence.get_config('SpeechClient', 'morse'):
-            message = self._message2morse(message)
+            message = SpeechClient._message2morse(message)
         tts = gTTS(text=message, lang='en')
         tts.save("tts_message.mp3")
         if platform.system().lower() == 'windows':
@@ -72,7 +72,8 @@ class SpeechClient(SuperClient):
         if os.path.isfile("tts_message.mp3"):
             os.remove("tts_message.mp3")
 
-    def _message2morse(self,message):
+    @staticmethod
+    def _message2morse(message):
         # Dictionary representing the morse code chart
         MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
                             'C':'-.-.', 'D':'-..', 'E':'.',
