@@ -22,8 +22,8 @@ Setting up a Python virtual environment as described [here](https://packaging.py
             pip install pyaudio
         ```
 3. Install requirements from requirements.txt `pip install -r requirements.txt`
-4. Set up given tokens and configurations in `icarus_base/settings.ini`, a template is given in `icarus_base/example_settings.ini`
-5. Run `python icarus_base/main.py`
+4. Set up given tokens and configurations in your configuration directory, e.g. `\AppData\Local\derilion\icarus\settings.ini` on Windows or `$HOME/.config/icarus_base/settings.ini` in linux
+5. Run `python main.py`
 
 ## Usage
 
@@ -32,17 +32,17 @@ For general usage a given text or speech input will be processed and a response 
 The currently only supported hotword to activate voice interaction is 'Jarvis'.
 
 ### Installation of Skills
-Skill files need to be copied to the `icarus_base/skills/` directory. When Icarus is restarted it will automatically recognize skills and enable them.
+Skill files need to be copied to the `icarus/skills/` directory. When Icarus is restarted it will automatically recognize skills and enable them.
 
 ### Installation of Clients
-Client files need to be copied to the `icarus_base/src/Clients/` directory. When Icarus is restarted it will automatically recognize clients and enable them.
+Client files need to be copied to the `icarus/Clients/` directory. When Icarus is restarted it will automatically recognize clients and enable them.
 
 ## How to write new Skills
 
-For Skills a straightforward API is given via inheritance. Inherit from `skills.superclient.SuperClient`, set values for self.id and the skill can be loaded. 
+For Skills a straightforward API is given via inheritance. Inherit from `icarus.skills.superclient.SuperClient`, set values for self.id and the skill can be loaded. 
 
 General parameters which should be set are:
-- `self.id: unique id`
+- `self.id`: unique id
 - `self.name`: skill name shown in userspace
 - `self.version`: version revision of the skill
 - `self.creator`: credit to yourself (and to blame you ofc)
