@@ -4,10 +4,10 @@
 """
 
 # general imports
-from icarus.Clients.superclient import SuperClient
-from icarus.SkillManagement.skillmanager import SkillManager
+from icarus.clients.superclient import SuperClient
+from icarus.skillmanagement.skillmanager import SkillManager
 # from src.restapi import RestApi
-from icarus.Persistence.persistence import Persistence
+from icarus.persistence.persistence import Persistence
 from icarus.logging import icarus_logger
 
 # imports for module discovery
@@ -53,10 +53,10 @@ class Icarus:
             if file.endswith('.py'):
                 # import all files into python
                 temp = file.rsplit('.py', 1)
-                import_module('icarus.Clients.' + temp[0])
+                import_module('icarus.clients.' + temp[0])
 
                 # check if any contained classes are children of "SuperSkill"
-                for name, obj in inspect.getmembers(sys.modules['icarus.Clients.' + temp[0]]):
+                for name, obj in inspect.getmembers(sys.modules['icarus.clients.' + temp[0]]):
                     if inspect.isclass(obj) and issubclass(obj, SuperClient) and obj is not SuperClient:
                         icarus_logger.debug("Discovered Client \"{}\"".format(temp[0]))
 

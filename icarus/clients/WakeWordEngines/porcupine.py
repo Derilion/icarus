@@ -6,7 +6,7 @@
 import pvporcupine
 import pyaudio
 import struct
-from icarus.Clients.WakeWordEngines.superwakeword import SuperWakeWord
+from icarus.clients.WakeWordEngines.superwakeword import SuperWakeWord
 
 
 class Recognition(Exception):

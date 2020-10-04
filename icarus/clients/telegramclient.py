@@ -1,5 +1,5 @@
 
-from icarus.Clients.superclient import SuperClient
+from icarus.clients.superclient import SuperClient
 from icarus.logging import icarus_logger
 
 from telegram.ext import Updater, Filters, MessageHandler

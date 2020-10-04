@@ -3,8 +3,8 @@
     Implemented as strategy to unify access
 """
 from threading import Lock
-from icarus.Persistence.database import SuperDatabase, SerialDatabase
-from icarus.Persistence.configuration import IniConfiguration
+from icarus.persistence.database import SuperDatabase, SerialDatabase
+from icarus.persistence.configuration import IniConfiguration
 
 
 class Persistence(SuperDatabase):

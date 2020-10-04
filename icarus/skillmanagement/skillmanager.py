@@ -9,8 +9,8 @@ from importlib import import_module
 import inspect
 
 # import used classes
-from icarus import Persistence
-from icarus.SkillManagement.InvertedIndex import InvertedSkillIndex
+from icarus.persistence.persistence import Persistence
+from icarus.skillmanagement.InvertedIndex import InvertedSkillIndex
 from icarus.context import Context
 from icarus.logging import icarus_logger
 

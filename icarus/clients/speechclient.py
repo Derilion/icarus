@@ -1,4 +1,4 @@
-from icarus.Clients.superclient import SuperClient
+from icarus.clients.superclient import SuperClient
 import speech_recognition as sr
 from gtts import gTTS
 import os
@@ -6,7 +6,7 @@ import platform
 from playsound import playsound
 from icarus.logging import icarus_logger
 try:
-    from icarus.Clients.WakeWordEngines.porcupine import Porcupine
+    from icarus.clients.WakeWordEngines.porcupine import Porcupine
 except OSError:
     icarus_logger.warning('Tried using porcupine with windows')
 

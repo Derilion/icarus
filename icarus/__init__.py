@@ -1,6 +1,6 @@
 from icarus.icarus import Icarus
 from icarus.skills import SuperSkill
-from icarus.SkillManagement.skillmanager import SkillManager
+from icarus.skillmanagement.skillmanager import SkillManager
 """ Provides relevant classes to external users """
 
 

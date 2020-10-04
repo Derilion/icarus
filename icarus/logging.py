@@ -2,7 +2,7 @@ import logging
 import os
 from appdirs import user_log_dir
 from logging import getLogger, FileHandler, Formatter
-from icarus.Persistence.configuration import IniConfiguration
+from icarus.persistence.configuration import IniConfiguration
 
 DEFAULT_LEVEL = 'ERROR'
 LOG_FORMAT = Formatter("%(asctime)s [%(levelname)s]: %(message)s")
