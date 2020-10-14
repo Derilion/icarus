@@ -40,7 +40,7 @@ class SpeechClient(SuperClient):
             playsound(PLING_MP3)
         except ModuleNotFoundError:
             # arch has a problem with python-gobject, using mpg123 as fallback
-            os.system("mpg123 ./pling.mp3 >/dev/null 2>&1")
+            os.system(f"mpg123 {os.path.dirname(__file__)}/../resources/pling.mp3 >/dev/null 2>&1")
 
     def stt(self):
         r = sr.Recognizer()
@@ -64,13 +64,13 @@ class SpeechClient(SuperClient):
         if self.persistence.get_config('SpeechClient', 'morse'):
             message = SpeechClient._message2morse(message)
         tts = gTTS(text=message, lang='en')
-        tts.save("tts_message.mp3")
+        tts.save(f"{os.path.dirname(__file__)}/../resources/tts_message.mp3")
         if platform.system().lower() == 'windows':
-            playsound("tts_message.mp3")
+            playsound(f"{os.path.dirname(__file__)}/../resources/tts_message.mp3")
         else:
-            os.system("mpg123 tts_message.mp3 >/dev/null 2>&1")
-        if os.path.isfile("tts_message.mp3"):
-            os.remove("tts_message.mp3")
+            os.system(f"mpg123 {os.path.dirname(__file__)}/../resources/tts_message.mp3")  # >/dev/null 2>&1")
+        if os.path.isfile(f"{os.path.dirname(__file__)}/../resources/tts_message.mp3"):
+            os.remove(f"{os.path.dirname(__file__)}/../resources/tts_message.mp3")
 
     @staticmethod
     def _message2morse(message):
