@@ -43,5 +43,5 @@ class IniConfiguration:
             ini_parser.read(CONFIG_FILE)
             return ini_parser.get(config_id, option_id)
         except configparser.Error as exception:
-            print(exception.__class__.__name__ + " reading from file " + CONFIG_PATH)
+            print(exception.__class__.__name__ + " reading from file " + CONFIG_FILE)
             return ''

@@ -17,9 +17,9 @@ class Porcupine(SuperWakeWord):
 
     def __init__(self):
         # todo: hardcoded parameters
-        self.sensitivity = [0.5]
+        sensitivity = [0.5]
 
-        self.handle = pvporcupine.create(keywords=['jarvis'])
+        self.handle = pvporcupine.create(keywords=['jarvis'], sensitivities=sensitivity)
         self.pa = pyaudio.PyAudio()
         self.audio_stream = self.pa.open(
             rate=self.handle.sample_rate,
@@ -33,7 +33,7 @@ class Porcupine(SuperWakeWord):
             while True:
                 pcm = self._get_next_audio_frame()
                 keyword_index = self.handle.process(pcm)
-                if keyword_index is not False:
+                if keyword_index >= 0:
                     print("Recognized Keyword")
                     raise Recognition
 

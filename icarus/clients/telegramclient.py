@@ -18,6 +18,7 @@ class TelegramClient(SuperClient):
             # init connection
             self.updater = Updater(token=self.persistence.get_config('Telegram', 'token'), use_context=True)
             self.dispatcher = self.updater.dispatcher
+            print("running telegram client")
         except InvalidToken:
             # todo: add logging
             return
