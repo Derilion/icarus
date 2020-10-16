@@ -61,7 +61,7 @@ class SpeechClient(SuperClient):
             print("Could not request results; {0}".format(e))
 
     def send(self, message: str, client_attr):
-        if self.persistence.get_config('SpeechClient', 'morse'):
+        if self.persistence.get_config('SpeechClient', 'morse') == 'true':
             message = SpeechClient._message2morse(message)
         tts = gTTS(text=message, lang='en')
         tts.save(f"{os.path.dirname(__file__)}/../resources/tts_message.mp3")
