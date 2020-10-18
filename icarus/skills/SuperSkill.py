@@ -109,7 +109,7 @@ class SuperSkill:
         :param setting_id: setting name
         :return: setting string if found, empty string if not found
         """
-        return self._persistence.get_config(self.name, setting_id)
+        return self._persistence.get_config(self.id, setting_id)
 
     def save_dict(self, data: dict, identifier: str = '') -> bool:
         """

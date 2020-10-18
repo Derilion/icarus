@@ -2,7 +2,7 @@ from icarus.skills.SuperSkill import SuperSkill
 from time import sleep
 
 
-class IDKSkill(SuperSkill):
+class TimerSkill(SuperSkill):
 
     id = 'Basic Timer'
     name = "Timer Skill"

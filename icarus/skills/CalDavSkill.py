@@ -6,7 +6,7 @@ from icalendar import Calendar
 
 class CalDavSkill(SuperSkill):
 
-    id = 'caldav skill'
+    id = 'caldav'
     name = "CalDav Skill"
     creator = "Derilion"
     version = "1.0"
